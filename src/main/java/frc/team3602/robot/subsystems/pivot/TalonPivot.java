@@ -41,7 +41,7 @@ public class TalonPivot {
     }
 
      /**method that returns the motor rotor position (or degrees of the sim in a simulation) */
-    public double getElevEncoder() {
+    public double getEncoder() {
         if (Utils.isSimulation()) {
             return Units.radiansToDegrees(pivotSim.getAngleRads());
         } else {
@@ -67,7 +67,7 @@ public class TalonPivot {
      * magic
      */
     public void updateMotorControl() {
-        motor.setControl(controller.withPosition(setpoint - getElevEncoder()).withSlot(0));
+        motor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0));
     }
 
     /**Updates the elevator sim input */
@@ -78,7 +78,7 @@ public class TalonPivot {
 
     /**Puts some helpful numbers to Smartdashboard */
     public void updateDashboard() {
-        SmartDashboard.putNumber(pivotName + " encoder", getElevEncoder());
+        SmartDashboard.putNumber(pivotName + " encoder", getEncoder());
         SmartDashboard.putNumber(pivotName + " setpoint", setpoint);
 
         SmartDashboard.putNumber(pivotName + " set voltage", motor.getMotorVoltage().getValueAsDouble());

@@ -25,9 +25,9 @@ public class ElevSubsystem extends SubsystemBase{
     
     private TalonElevator elevator;
 
-    private final double startingHeight = 0;
+    public final double startingHeight = 0;
 
-    private final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 8, 0.5, -0.01, Units.inchesToMeters(72), true, startingHeight);
+    public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 8, 0.5, -0.01, Units.inchesToMeters(72), true, startingHeight);
 
     public ElevSubsystem() {
         TalonFXConfiguration cfg = new TalonFXConfiguration();

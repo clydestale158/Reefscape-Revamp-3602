@@ -23,11 +23,11 @@ public class PivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
     private final TalonFX intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
 
-    private final TalonPivot pivot;
-    private final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), PIVOT_GEARING, SingleJointedArmSim.estimateMOI(0.2, 3), 3, Units.degreesToRadians(-100), Units.degreesToRadians(140), true, 30);
+    public final double startingAngle = 0;
+    public double intakeSpeed;//ONLY USED FOR LOGGING AND SIM
 
-    private double pivotSetpoint;
-    private double intakeSpeed;
+    public final TalonPivot pivot;
+    public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), PIVOT_GEARING, SingleJointedArmSim.estimateMOI(0.2, 7), 0.2, Units.degreesToRadians(-120), Units.degreesToRadians(140), true, Units.degreesToRadians(startingAngle));
 
     public PivotSubsystem(){
         TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -68,9 +68,29 @@ public class PivotSubsystem extends SubsystemBase {
         pivot = new TalonPivot("Pivot", pivotMotor, pivotSim, cfg);
     }
 
+    /**Run once command that changes the setpoint of the pivot */
     public Command setAngle(double newAngle){
         return runOnce(() ->{
             pivot.setAngle(newAngle);
+        });
+    }
+
+    /**Run end command that sets the speed of the intake motor, then sets it to 0 upon ending */
+    public Command runIntake(double speed){
+        return runEnd(() ->{
+            intakeMotor.set(speed);
+            intakeSpeed = speed;
+        }, () ->{
+            intakeMotor.set(0);
+            intakeSpeed = 0;
+        });
+    }
+
+    /**Run once command that sets the speed of the intake motor */
+    public Command setIntake(double speed){
+        return runOnce(() ->{
+            intakeMotor.set(speed);
+            intakeSpeed = speed;
         });
     }
 

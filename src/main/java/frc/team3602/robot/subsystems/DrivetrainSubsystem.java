@@ -1,6 +1,7 @@
 package frc.team3602.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.team3602.robot.Constants.HardareConstants.*;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -36,8 +37,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.team3602.robot.Constants.DrivetrainConstants;
-import frc.team3602.robot.Constants.flyPathPosesConstants;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -63,7 +62,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-  private final LaserCan alignmentLASER = new LaserCan(DrivetrainConstants.kAlignmentLASERCANId);
+  private final LaserCan alignmentLASER = new LaserCan(DRIVE_LASER_ID);
   private double distance = 0.0;
 
 
@@ -289,118 +288,118 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 
-  // NEW
-  // Pathplanner - create paths on the fly
+  // // NEW
+  // // Pathplanner - create paths on the fly
 
-  // lists are the points the robot will use to travel along
-  // TODO make waypoints more accurate & fix with real robot testing
-  // I don't think it needs red vs blue, but in the meantime, I created some red
-  // vars too
-  // in the var names, barge refers to the barge side of the field. from the
-  // drivers station, this is the left side of the field
-  private List<Waypoint> blueFarBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(5.7, 6.4, Rotation2d.fromDegrees(-10)),
-      new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
-      flyPathPosesConstants.blueBargeCoralIntakePose);
-  private List<Waypoint> blueCloseBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
-      flyPathPosesConstants.blueBargeCoralIntakePose);
-  private List<Waypoint> blueFarNONBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(5.7, 2.2, Rotation2d.fromDegrees(20)),
-      new Pose2d(2.6, 1.8, Rotation2d.fromDegrees(60)),
-      new Pose2d(1.2, 1.8, Rotation2d.fromDegrees(125)),
+  // // lists are the points the robot will use to travel along
+  // // TODO make waypoints more accurate & fix with real robot testing
+  // // I don't think it needs red vs blue, but in the meantime, I created some red
+  // // vars too
+  // // in the var names, barge refers to the barge side of the field. from the
+  // // drivers station, this is the left side of the field
+  // private List<Waypoint> blueFarBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
+  //     new Pose2d(5.7, 6.4, Rotation2d.fromDegrees(-10)),
+  //     new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
+  //     flyPathPosesConstants.blueBargeCoralIntakePose);
+  // private List<Waypoint> blueCloseBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
+  //     new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
+  //     flyPathPosesConstants.blueBargeCoralIntakePose);
+  // private List<Waypoint> blueFarNONBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
+  //     new Pose2d(5.7, 2.2, Rotation2d.fromDegrees(20)),
+  //     new Pose2d(2.6, 1.8, Rotation2d.fromDegrees(60)),
+  //     new Pose2d(1.2, 1.8, Rotation2d.fromDegrees(125)),
 
-      flyPathPosesConstants.blueNONBargeCoralIntakePose);
-  private List<Waypoint> blueCloseNONBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(2.6, 1.8, Rotation2d.fromDegrees(60)),
-      new Pose2d(1.2, 1.8, Rotation2d.fromDegrees(125)),
-      flyPathPosesConstants.blueNONBargeCoralIntakePose);
+  //     flyPathPosesConstants.blueNONBargeCoralIntakePose);
+  // private List<Waypoint> blueCloseNONBargeReefToCoralIntake = PathPlannerPath.waypointsFromPoses(
+  //     new Pose2d(2.6, 1.8, Rotation2d.fromDegrees(60)),
+  //     new Pose2d(1.2, 1.8, Rotation2d.fromDegrees(125)),
+  //     flyPathPosesConstants.blueNONBargeCoralIntakePose);
 
-  private PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+  // private PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
 
-  // command to get us to the coral station
-  // we can use booleans to get our pose and try a path based on that(depending on
-  // y, we can go to the other coral station)
-  public Command flypathToCoralStation() {
-    if (getState().Pose.getY() >= 4) {
-      if (getState().Pose.getX() >= 4.5) {
-        try {
+  // // command to get us to the coral station
+  // // we can use booleans to get our pose and try a path based on that(depending on
+  // // y, we can go to the other coral station)
+  // public Command flypathToCoralStation() {
+  //   if (getState().Pose.getY() >= 4) {
+  //     if (getState().Pose.getX() >= 4.5) {
+  //       try {
 
-          // Load the path you want to follow using its name in the GUI
-          PathPlannerPath flypath = new PathPlannerPath(
-              blueFarBargeReefToCoralIntake,
-              constraints,
-              null, // The ideal starting state, this is only relevant for pre-planned paths, so can
-                    // be null for on-the-fly paths.
-              new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic
-                                                                // rotation here. If using a differential
-                                                                // drivetrain, the rotation will have no
-                                                                // effect.
-          );
-          flypath.preventFlipping = true;
+  //         // Load the path you want to follow using its name in the GUI
+  //         PathPlannerPath flypath = new PathPlannerPath(
+  //             blueFarBargeReefToCoralIntake,
+  //             constraints,
+  //             null, // The ideal starting state, this is only relevant for pre-planned paths, so can
+  //                   // be null for on-the-fly paths.
+  //             new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic
+  //                                                               // rotation here. If using a differential
+  //                                                               // drivetrain, the rotation will have no
+  //                                                               // effect.
+  //         );
+  //         flypath.preventFlipping = true;
 
-        // Create a path following command using AutoBuilder.
-        return AutoBuilder.followPath(flypath);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }}else{
-        try{
+  //       // Create a path following command using AutoBuilder.
+  //       return AutoBuilder.followPath(flypath);
+  //   } catch (Exception e) {
+  //       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+  //       return Commands.none();
+  //   }}else{
+  //       try{
         
-            // Load the path you want to follow using its name in the GUI
-            PathPlannerPath flypath = new PathPlannerPath(
-                blueCloseBargeReefToCoralIntake,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-            flypath.preventFlipping = true;
+  //           // Load the path you want to follow using its name in the GUI
+  //           PathPlannerPath flypath = new PathPlannerPath(
+  //               blueCloseBargeReefToCoralIntake,
+  //               constraints,
+  //               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+  //               new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+  //       );
+  //           flypath.preventFlipping = true;
     
-            // Create a path following command using AutoBuilder.
-            return AutoBuilder.followPath(flypath);
-        } catch (Exception e) {
-            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-    }}}else if (getState().Pose.getY() < 4){
-        if(getState().Pose.getX()>= 4.5){
-            try{
+  //           // Create a path following command using AutoBuilder.
+  //           return AutoBuilder.followPath(flypath);
+  //       } catch (Exception e) {
+  //           DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+  //           return Commands.none();
+  //   }}}else if (getState().Pose.getY() < 4){
+  //       if(getState().Pose.getX()>= 4.5){
+  //           try{
                 
-                // Load the path you want to follow using its name in the GUI
-                PathPlannerPath flypath = new PathPlannerPath(
-                    blueFarNONBargeReefToCoralIntake,
-                    constraints,
-                    null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                    new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-                flypath.preventFlipping = true;
+  //               // Load the path you want to follow using its name in the GUI
+  //               PathPlannerPath flypath = new PathPlannerPath(
+  //                   blueFarNONBargeReefToCoralIntake,
+  //                   constraints,
+  //                   null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+  //                   new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+  //           );
+  //               flypath.preventFlipping = true;
         
-                // Create a path following command using AutoBuilder.
-                return AutoBuilder.followPath(flypath);
-            } catch (Exception e) {
-                DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                return Commands.none();
-            }}else{
-                try{
+  //               // Create a path following command using AutoBuilder.
+  //               return AutoBuilder.followPath(flypath);
+  //           } catch (Exception e) {
+  //               DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+  //               return Commands.none();
+  //           }}else{
+  //               try{
                 
-                    // Load the path you want to follow using its name in the GUI
-                    PathPlannerPath flypath = new PathPlannerPath(
-                        blueCloseNONBargeReefToCoralIntake,
-                        constraints,
-                        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                        new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-                );
-                    flypath.preventFlipping = true;
+  //                   // Load the path you want to follow using its name in the GUI
+  //                   PathPlannerPath flypath = new PathPlannerPath(
+  //                       blueCloseNONBargeReefToCoralIntake,
+  //                       constraints,
+  //                       null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+  //                       new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+  //               );
+  //                   flypath.preventFlipping = true;
             
-                    // Create a path following command using AutoBuilder.
-                    return AutoBuilder.followPath(flypath);
-                } catch (Exception e) {
-                    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                    return Commands.none();
-                }
-            }} else{
-                return Commands.none();
-            }
-    }
+  //                   // Create a path following command using AutoBuilder.
+  //                   return AutoBuilder.followPath(flypath);
+  //               } catch (Exception e) {
+  //                   DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+  //                   return Commands.none();
+  //               }
+  //           }} else{
+  //               return Commands.none();
+  //           }
+  //   }
 
   public Double getDistanceFromReef() {
     return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
