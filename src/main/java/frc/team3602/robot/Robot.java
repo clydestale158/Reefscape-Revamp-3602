@@ -4,7 +4,14 @@
 
 package frc.team3602.robot;
 
+import com.ctre.phoenix6.Utils;
+
+import au.grapplerobotics.CanBridge;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -16,16 +23,37 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  public Robot() {}
+
+   private RobotContainer robotContainer = new RobotContainer();
+  public Robot() {
+    CanBridge.runTCP();
+  }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+       Threads.setCurrentThreadPriority(true, 99);
+    CommandScheduler.getInstance().run();
+
+    if (Utils.isSimulation()) {
+      robotContainer.updateVision();
+    }
+
+   Threads.setCurrentThreadPriority(false, 10);
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    Command autonomousCommand = robotContainer.getAutonomousCommand();
+    if(autonomousCommand != null){
+      autonomousCommand.schedule();
+    } else {
+      SmartDashboard.putString("uh oh bad things", "No auton selected!! somebody is an absolute buns skibidi monkey");
+    }
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {}

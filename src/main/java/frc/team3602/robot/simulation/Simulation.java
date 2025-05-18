@@ -55,6 +55,12 @@ public class Simulation extends SubsystemBase {
         pivotMech.viz2.setRoot((Math.cos(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75,
         (Math.sin(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75);
 
+        if(pivotSubsys.sensorIsTriggered()){
+            pivotMech.viz3.setColor(green);
+        } else{
+            pivotMech.viz3.setColor(red);
+        }
+
         elevMech.viz.updatePublisher();
         pivotMech.viz.updatePublisher();
         pivotMech.viz2.updatePublisher();
