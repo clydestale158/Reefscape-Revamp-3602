@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -72,6 +73,10 @@ public class ElevSubsystem extends SubsystemBase{
         return runOnce(() ->{
             elevator.setHeight(newHeight);
         });
+    }
+
+    public boolean isNearGoal(){
+        return MathUtil.isNear(elevator.setpoint, elevator.getEncoder(), 1.5);
     }
 
     @Override 

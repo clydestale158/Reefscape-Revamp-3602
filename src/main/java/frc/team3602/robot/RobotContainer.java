@@ -1,9 +1,11 @@
 package frc.team3602.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.wpilibj2.command.Commands.print;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -13,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.team3602.robot.generated.TunerConstants;
-import frc.team3602.robot.subsystems.DrivetrainSubsystem;
+import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
+import frc.team3602.robot.subsystems.drive.generated.TunerConstants;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
 import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 import frc.team3602.robot.vision.Vision;
@@ -38,12 +40,11 @@ public class RobotContainer {
 
     private final Vision vision = new Vision();
 
-    //private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    public SendableChooser<Command> autoChooser;
     private final SendableChooser<Double> polarityChooser = new SendableChooser<>();
 
     public RobotContainer(){
         
-        drivetrain.configDrivetrainSubsys();
 
         //SmartDashboard.putData(autoChooser);
         SmartDashboard.putData("Polarity", polarityChooser);
@@ -61,6 +62,9 @@ public class RobotContainer {
             configButtonBindings();
         }
         configDefaultCommands();
+        configNamedCommands();
+        drivetrain.configAutoBuilder(autoChooser);
+
     }
 
     private void configDefaultCommands(){
@@ -87,9 +91,11 @@ public class RobotContainer {
 
     }
 
-    public Command getAutonomousCommand(){
-        return Commands.none();//autoChooser.getSelected();
+    private void configNamedCommands(){
+        NamedCommands.registerCommand("Test", print("Auton test"));
     }
+
+
 
     public void updateVision(){
 

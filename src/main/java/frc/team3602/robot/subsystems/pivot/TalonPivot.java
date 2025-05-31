@@ -14,7 +14,7 @@ public class TalonPivot {
     private final String pivotName;
     private final TalonFX motor;
 
-    private double setpoint;
+    public double setpoint;
 
     private final SingleJointedArmSim pivotSim;
 
@@ -63,7 +63,7 @@ public class TalonPivot {
     }
 
     /**
-     * call (referably periodically) to set the control of the motors using motion
+     * call (preferably periodically) to set the control of the motors using motion
      * magic
      */
     public void updateMotorControl() {

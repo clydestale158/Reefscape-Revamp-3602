@@ -4,6 +4,8 @@
 
 package frc.team3602.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.none;
+
 import com.ctre.phoenix6.Utils;
 
 import au.grapplerobotics.CanBridge;
@@ -25,6 +27,8 @@ public class Robot extends TimedRobot {
    */
 
    private RobotContainer robotContainer = new RobotContainer();
+  private Command autonomousCommand;
+
   public Robot() {
     CanBridge.runTCP();
   }
@@ -43,11 +47,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    Command autonomousCommand = robotContainer.getAutonomousCommand();
+    autonomousCommand = robotContainer.autoChooser.getSelected();
     if(autonomousCommand != null){
       autonomousCommand.schedule();
     } else {
-      SmartDashboard.putString("uh oh bad things", "No auton selected!! somebody is an absolute buns skibidi monkey");
+      SmartDashboard.putString("Errors", "No auton selected!! somebody is an absolute buns skibidi monkey");
     }
   }
 
@@ -56,7 +60,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    if(autonomousCommand != null){
+      autonomousCommand.cancel();
+    } 
+
+  }
 
   @Override
   public void teleopPeriodic() {}

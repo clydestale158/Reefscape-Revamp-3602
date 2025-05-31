@@ -1,4 +1,4 @@
-package frc.team3602.robot.subsystems;
+package frc.team3602.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.team3602.robot.Constants.HardareConstants.*;
@@ -31,12 +31,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import static edu.wpi.first.wpilibj2.command.Commands.print;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.team3602.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.team3602.robot.subsystems.drive.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -405,7 +406,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
   }
 
-  public void configDrivetrainSubsys() {
+  /**Config for pathplanner's auto builder. MUST be called only AFTER named commands are registered/configured */
+  public void configAutoBuilder(SendableChooser<Command> autoChooser) {
     try {
       var config = RobotConfig.fromGUISettings();
       
@@ -423,8 +425,13 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
           config,
           () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
           this);
+
+          autoChooser = AutoBuilder.buildAutoChooser();
+          SmartDashboard.putData("Auto Chooser", autoChooser);
+          autoChooser.setDefaultOption("null", print("You skibidi messed up big time, pure buns brat behavior"));
     } catch (Exception ex) {
-      DriverStation.reportError("something may or may not be broken, idk", ex.getStackTrace());
+      DriverStation.reportError("Pathplanner auto builder config FAILED", ex.getStackTrace());
+      SmartDashboard.putString("Errors", "Pathplanner auto builder config FAILED");
     }
   }
 }

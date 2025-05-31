@@ -16,6 +16,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import au.grapplerobotics.LaserCan;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -59,6 +60,8 @@ public class PivotSubsystem extends SubsystemBase {
         Slot0Configs slot0 = cfg.Slot0;
 
         if (Utils.isSimulation()) {
+            this.joystick = joystick;
+
             slot0.kS = 0.0;
             slot0.kG = 1.0;
             slot0.kA = 0.2;
@@ -124,6 +127,10 @@ public class PivotSubsystem extends SubsystemBase {
             LaserCan.Measurement meas = laser.getMeasurement();
             return meas.distance_mm < 50;
         }
+    }
+
+    public boolean isNearGoal(){
+        return MathUtil.isNear(pivot.setpoint, pivot.getEncoder(), 5);
     }
 
     @Override

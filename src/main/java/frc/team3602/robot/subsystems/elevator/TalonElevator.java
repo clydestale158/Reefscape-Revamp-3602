@@ -15,7 +15,7 @@ public class TalonElevator {
     public final TalonFX leadMotor;
     public final TalonFX followerMotor;
 
-    private double setpoint = 0;
+    public double setpoint = 0;
 
     public ElevatorSim elevSim;
 
@@ -59,7 +59,7 @@ public class TalonElevator {
     }
 
     /**method that returns the elevator rotor position (or meters in a simulation) */
-    public double getElevEncoder() {
+    public double getEncoder() {
         if (Utils.isSimulation()) {
             return elevSim.getPositionMeters();
         } else {
@@ -85,7 +85,7 @@ public class TalonElevator {
      * magic
      */
     public void updateMotorControl() {
-        leadMotor.setControl(controller.withPosition(setpoint - getElevEncoder()).withSlot(0));
+        leadMotor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0));
     }
 
     /**Updates the elevator sim input */
@@ -96,7 +96,7 @@ public class TalonElevator {
 
     /**Puts some helpful numbers to Smartdashboard */
     public void updateDashboard() {
-        SmartDashboard.putNumber(elevName + " encoder", getElevEncoder());
+        SmartDashboard.putNumber(elevName + " encoder", getEncoder());
         SmartDashboard.putNumber(elevName + " setpoint", setpoint);
 
         SmartDashboard.putNumber(elevName + " set voltage", leadMotor.getMotorVoltage().getValueAsDouble());

@@ -24,6 +24,27 @@ public class Constants {
 
     }
 
+    public class PivotConstants{
+        public final static double INTAKE_SPEED = 0.5;//TODO check/fix irl
+        public final static double SCORE_SPEED = 0.5;//TODO check/fix irl
+
+        public final static double INTAKE_ANGLE = 110;//TODO check/fix irl
+        public final static double STOW_ANGLE = 80;//TODO check/fix irl
+
+        public final static double SCORE_ANGLE = 80;//TODO check/fix irl
+        public final static double SCORE_L4_ANGLE = 70;//TODO check/fix irl
+    }
+
+    public class ElevConstants{
+        public final static double ELEV_DOWN = 0.0;
+        public final static double ELEV_L2 = 8;//TODO check/fix irl
+        public final static double ELEV_L3 = 14;//TODO check/fix irl
+        public final static double ELEV_L4 = 20;//TODO check/fix irl
+        public final static double ELEV_L4_BUMP = 21;//TODO check/fix irl
+
+
+    }
+
     public class VisionConstants {
         public final static String FRONT_CAM_NAME = "Front Cam";
         public final static int FRONT_CAM_WIDTH_RES = 4656;
