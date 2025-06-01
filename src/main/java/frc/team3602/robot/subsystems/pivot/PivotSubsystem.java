@@ -2,6 +2,7 @@ package frc.team3602.robot.subsystems.pivot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.team3602.robot.Constants.HardareConstants.*;
+import static frc.team3602.robot.Constants.PivotConstants.*;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -19,6 +20,7 @@ import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -120,6 +122,16 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
+    public Command intakeAlgae(){
+        return runEnd(()->{
+            setIntake(INTAKE_ALGAE_SPEED);
+            intakeSpeed = INTAKE_ALGAE_SPEED;
+        }, ()->{
+            setIntake(HOLD_ALGAE_SPEED);
+            intakeSpeed = HOLD_ALGAE_SPEED;
+        });
+    }
+
     public boolean sensorIsTriggered() {
         if (Utils.isSimulation()) {
             return joystick.button(1).getAsBoolean();
@@ -131,6 +143,15 @@ public class PivotSubsystem extends SubsystemBase {
 
     public boolean isNearGoal(){
         return MathUtil.isNear(pivot.setpoint, pivot.getEncoder(), 5);
+    }
+
+
+    public boolean hasAlgae(){
+        if(RobotBase.isSimulation()){
+            return joystick.button(2).getAsBoolean();
+        } else {
+            return intakeMotor.getTorqueCurrent().getValueAsDouble() > 20;
+        }
     }
 
     @Override

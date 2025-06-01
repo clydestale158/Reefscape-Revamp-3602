@@ -27,9 +27,14 @@ public class Constants {
     public class PivotConstants{
         public final static double INTAKE_SPEED = 0.5;//TODO check/fix irl
         public final static double SCORE_SPEED = 0.5;//TODO check/fix irl
+        public final static double INTAKE_ALGAE_SPEED = 0.5;//TODO check/fix irl
+        public final static double HOLD_ALGAE_SPEED = 0.5;//TODO check/fix irl
+
 
         public final static double INTAKE_ANGLE = 110;//TODO check/fix irl
         public final static double STOW_ANGLE = 80;//TODO check/fix irl
+        public final static double INTAKE_ALGAE_ANGLE = 110;//TODO check/fix irl
+
 
         public final static double SCORE_ANGLE = 80;//TODO check/fix irl
         public final static double SCORE_L4_ANGLE = 70;//TODO check/fix irl
@@ -42,6 +47,8 @@ public class Constants {
         public final static double ELEV_L4 = 20;//TODO check/fix irl
         public final static double ELEV_L4_BUMP = 21;//TODO check/fix irl
 
+        public final static double ELEV_L2_ALGAE = 8;//TODO check/fix irl
+        public final static double ELEV_L3_ALGAE = 14;//TODO check/fix irl
 
     }
 

@@ -9,6 +9,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.none;
 import com.ctre.phoenix6.Utils;
 
 import au.grapplerobotics.CanBridge;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,8 +39,8 @@ public class Robot extends TimedRobot {
        Threads.setCurrentThreadPriority(true, 99);
     CommandScheduler.getInstance().run();
 
-    if (Utils.isSimulation()) {
-      robotContainer.updateVision();
+    if (RobotBase.isSimulation()) {
+      //robotContainer.updateVision();//TODO fix and add back in
     }
 
    Threads.setCurrentThreadPriority(false, 10);

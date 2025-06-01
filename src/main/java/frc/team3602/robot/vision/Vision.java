@@ -35,7 +35,8 @@ public class Vision {
     }
 
     public void updateViz(Pose2d pose) {
-        fieldViz.setRobotPose(pose);
+        //fieldViz.setRobotPose(pose);
+        visionSim.update(pose);
     } 
 
     public void reset() {
