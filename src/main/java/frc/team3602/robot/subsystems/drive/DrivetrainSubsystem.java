@@ -1,7 +1,7 @@
 package frc.team3602.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.team3602.robot.Constants.HardareConstants.*;
+import static frc.team3602.robot.Constants.HardwareConstants.*;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -453,7 +453,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
       autoChooser = AutoBuilder.buildAutoChooser();
       SmartDashboard.putData("Auto Chooser", autoChooser);
-      autoChooser.setDefaultOption("null", print("You skibidi messed up big time, pure buns brat behavior"));
+      //autoChooser.setDefaultOption("null", print("You skibidi messed up big time, pure buns brat behavior"));
     } catch (Exception ex) {
       DriverStation.reportError("Pathplanner auto builder config FAILED", ex.getStackTrace());
       SmartDashboard.putString("Errors", "Pathplanner auto builder config FAILED");

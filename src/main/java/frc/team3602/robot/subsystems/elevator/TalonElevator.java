@@ -90,7 +90,7 @@ public class TalonElevator {
 
     /**Updates the elevator sim input */
     public void updateSim() {
-        elevSim.setInput(leadMotor.getMotorVoltage().getValueAsDouble());
+        elevSim.setInput(leadMotor.getMotorVoltage().getValueAsDouble() * 16);
         elevSim.update(0.001);
     }
 
@@ -102,5 +102,7 @@ public class TalonElevator {
         SmartDashboard.putNumber(elevName + " set voltage", leadMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber(elevName + " follower set voltage",
                 followerMotor.getMotorVoltage().getValueAsDouble());
+
+        SmartDashboard.putNumber(elevName + " velocity", leadMotor.getVelocity().getValueAsDouble());
     }
 }

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -72,7 +73,7 @@ public class TalonPivot {
 
     /**Updates the elevator sim input */
     public void updateSim() {
-        pivotSim.setInput(motor.getMotorVoltage().getValueAsDouble());
+        pivotSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 4);
         pivotSim.update(0.001);
     }
 

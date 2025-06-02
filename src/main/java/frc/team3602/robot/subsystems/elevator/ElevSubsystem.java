@@ -1,7 +1,7 @@
 package frc.team3602.robot.subsystems.elevator;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static frc.team3602.robot.Constants.HardareConstants.*;
+import static frc.team3602.robot.Constants.HardwareConstants.*;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -17,6 +17,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -26,7 +27,7 @@ public class ElevSubsystem extends SubsystemBase{
     
     private TalonElevator elevator;
 
-    public final double startingHeight = 0;
+    public final double startingHeight = 0.6;
 
     public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 8, 0.5, -0.01, Units.inchesToMeters(72), true, startingHeight);
 
@@ -43,17 +44,18 @@ public class ElevSubsystem extends SubsystemBase{
         feedbackCfg.SensorToMechanismRatio = ELEV_GEARING;
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
-        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(2)).withMotionMagicAcceleration(4);
+        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(240)).withMotionMagicAcceleration(120)
+        .withMotionMagicJerk(30);
         //TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
 
         if (Utils.isSimulation()) {
             slot0.kS = 0.0;
-            slot0.kG = 1.0;
-            slot0.kA = 0.2;
+            slot0.kG = 0.05;//0.091;// PRE VOLTAGE MULTIPLICATION -> 0.69;//.7> && .67< 
+            slot0.kA = 0.1;
             slot0.kV = 0.1;
-            slot0.kP = 0.0;
+            slot0.kP = 0.2;
             slot0.kI = 0.0;
             slot0.kD = 0.0;
         } else {

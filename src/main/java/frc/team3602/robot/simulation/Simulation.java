@@ -51,7 +51,7 @@ public class Simulation extends SubsystemBase {
 
         pivotMech.viz.setAngle(pivotSubsys.pivot.getEncoder(), new Rotation3d(0,pivotSubsys.pivot.getEncoder(), 0));
         
-        pivotMech.viz2.setAngle(pivotMech.viz2.getAngle() + (intakeSim.getAngularVelocityRPM() * 0.02), new Rotation3d(0, pivotMech.viz2.getAngle(), 0));
+        pivotMech.viz2.setAngle(pivotMech.viz2.getAngle() + (intakeSim.getAngularVelocityRPM() * 0.06), new Rotation3d(0, pivotMech.viz2.getAngle(), 0));
         pivotMech.viz2.setRoot((Math.cos(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75,
         (Math.sin(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75);
 

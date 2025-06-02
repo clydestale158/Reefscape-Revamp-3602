@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-    public class HardareConstants {
+    public class HardwareConstants {
         public final static int ELEV_LEAD_MOTOR_ID = 53;
         public final static int ELEV_FOLLOW_MOTOR_ID = 57;
         public final static int PIVOT_MOTOR_ID = 52;

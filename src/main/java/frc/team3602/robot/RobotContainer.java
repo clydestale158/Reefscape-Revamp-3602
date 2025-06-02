@@ -92,15 +92,15 @@ public class RobotContainer {
     }
 
     private void configSimButtonBindings() {
-        // joystick.button(1).onTrue(pivotSubsystem.setAngle(-80));
-        // joystick.button(2).onTrue(pivotSubsystem.setAngle(0));
-        // joystick.button(3).onTrue(pivotSubsystem.setAngle(110));
-        // joystick.button(4).whileTrue(pivotSubsystem.runIntake(1));
+        joystick.button(1).onTrue(pivotSubsystem.setAngle(-80));
+        joystick.button(2).onTrue(pivotSubsystem.setAngle(0));
+        joystick.button(3).onTrue(pivotSubsystem.setAngle(110));
+        joystick.button(4).whileTrue(pivotSubsystem.runIntake(1));
 
-        joystick.button(1).onTrue(superstructure.setElevator(ELEV_DOWN));
-        joystick.button(2).onTrue(superstructure.scoreCoralL2());
-        joystick.button(3).onTrue(superstructure.scoreCoralL3());
-        joystick.button(4).onTrue(superstructure.scoreCoralL4());
+        // joystick.button(1).onTrue(superstructure.setElevator(ELEV_DOWN));
+        // joystick.button(2).onTrue(superstructure.scoreCoralL2());
+        // joystick.button(3).onTrue(superstructure.scoreCoralL3());
+        // joystick.button(4).onTrue(superstructure.scoreCoralL4());
 
         joystick2.button(1).onTrue(elevSubsystem.setHeight(0.05));
         joystick2.button(2).onTrue(elevSubsystem.setHeight(0.5));

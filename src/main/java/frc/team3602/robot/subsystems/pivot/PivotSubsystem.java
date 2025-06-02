@@ -1,7 +1,7 @@
 package frc.team3602.robot.subsystems.pivot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static frc.team3602.robot.Constants.HardareConstants.*;
+import static frc.team3602.robot.Constants.HardwareConstants.*;
 import static frc.team3602.robot.Constants.PivotConstants.*;
 
 import com.ctre.phoenix6.Utils;
@@ -35,7 +35,7 @@ public class PivotSubsystem extends SubsystemBase {
     private CANcoder pivotEncoder;
 
     private CommandJoystick joystick;
-    public final double startingAngle = 0;
+    public final double startingAngle = 30;
     public double intakeSpeed;// ONLY USED FOR LOGGING AND SIM
 
     public final TalonPivot pivot;
@@ -56,7 +56,8 @@ public class PivotSubsystem extends SubsystemBase {
         feedbackCfg.SensorToMechanismRatio = PIVOT_GEARING;
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
-        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(2)).withMotionMagicAcceleration(4);
+        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(20)).withMotionMagicAcceleration(10)
+        .withMotionMagicJerk(5);
         // TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
@@ -65,10 +66,10 @@ public class PivotSubsystem extends SubsystemBase {
             this.joystick = joystick;
 
             slot0.kS = 0.0;
-            slot0.kG = 1.0;
+            slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
             slot0.kA = 0.2;
             slot0.kV = 0.1;
-            slot0.kP = 0.0;
+            slot0.kP = 0.2;//1>>
             slot0.kI = 0.0;
             slot0.kD = 0.0;
 
