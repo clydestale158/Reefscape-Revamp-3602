@@ -4,10 +4,6 @@
 
 package frc.team3602.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.none;
-
-import com.ctre.phoenix6.Utils;
-
 import au.grapplerobotics.CanBridge;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Threads;
@@ -40,7 +36,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     if (RobotBase.isSimulation()) {
-      //robotContainer.updateVision();//TODO fix and add back in
+      robotContainer.updateVision();
     }
 
    Threads.setCurrentThreadPriority(false, 10);

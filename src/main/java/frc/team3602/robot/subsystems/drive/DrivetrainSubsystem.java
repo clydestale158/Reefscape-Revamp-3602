@@ -64,6 +64,13 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+
+  // //TODO request FOUR lasers? could be fire...
+  // private LaserCan leftInnerLaser = new LaserCan(DRIVE_LEFT_INNER_LASER_ID);
+  // private LaserCan leftOuterLaser = new LaserCan(DRIVE_LEFT_OUTER_LASER_ID);
+  // private LaserCan rightInnerLaser = new LaserCan(DRIVE_RIGHT_INNER_LASER_ID);
+  // private LaserCan rightOuterLaser = new LaserCan(DRIVE_RIGHT_OUTER_LASER_ID);
+
   private final LaserCan alignmentLASER = new LaserCan(DRIVE_LASER_ID);
   private double distance = 0.0;
 
@@ -428,11 +435,21 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     }
   }
 
+  public boolean seesReef(){
+    if (RobotBase.isSimulation()) {
+      return false;// TODO change lol
+    } else {
+      return (alignmentLASER.getMeasurement().distance_mm) < 1000;
+    }
+  }
+
   /**
    * Config for pathplanner's auto builder. MUST be called only AFTER named
    * commands are registered/configured
    */
-  public void configAutoBuilder(SendableChooser<Command> autoChooser) {
+  public SendableChooser<Command> autoChooser;
+
+  public void configAutoBuilder() {
     try {
       var config = RobotConfig.fromGUISettings();
 

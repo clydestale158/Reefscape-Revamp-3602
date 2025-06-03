@@ -65,7 +65,7 @@ public class Camera {
             latestPoseTimestamp = camera.getAllUnreadResults().get(camera.getAllUnreadResults().lastIndexOf(change))
                     .getTimestampSeconds();
         }
-        
+
         return estimatedPose;
     }
 
@@ -90,8 +90,8 @@ public class Camera {
     }
 
     public Transform3d getTargetTransformation(PhotonPipelineResult latestResult) {
-            return camera.getAllUnreadResults().get(camera.getAllUnreadResults().lastIndexOf(latestResult))
-                    .getBestTarget().bestCameraToTarget;
+        return camera.getAllUnreadResults().get(camera.getAllUnreadResults().lastIndexOf(latestResult))
+                .getBestTarget().bestCameraToTarget;
     }
 
     /**
@@ -99,6 +99,7 @@ public class Camera {
      * rotational values, and latest timestamp
      */
     public void putRobotPoseValues() {
+        try{
         getEstimatedPose().ifPresent(est -> {
             SmartDashboard.putNumber(cameraName + " Est Robot Pose X", est.estimatedPose.toPose2d().getX());
             SmartDashboard.putNumber(cameraName + " Est Robot Pose Y", est.estimatedPose.toPose2d().getY());
@@ -107,6 +108,9 @@ public class Camera {
             SmartDashboard.putNumber(cameraName + " Est Robot Pose Latest Timestamp", latestPoseTimestamp);
 
         });
+    }catch (Exception ex){
+        SmartDashboard.putString("Errors", cameraName + " robot pose est failed!");
+    }
     }
 
     /**
@@ -114,19 +118,23 @@ public class Camera {
      * z, and fiducial id
      */
     public void putTargetValues() {
-        for (PhotonPipelineResult change : camera.getAllUnreadResults()) {
-            SmartDashboard.putNumber(cameraName + "target transform x",
-                    getTargetTransformation(change).getX());
-            SmartDashboard.putNumber(cameraName + " target transform y", getTargetTransformation(change).getY());
-            SmartDashboard.putNumber(cameraName + " target transform z", getTargetTransformation(change).getZ());
-            SmartDashboard.putNumber(cameraName + " target rotation x",
-                    getTargetTransformation(change).getRotation().getX());
-            SmartDashboard.putNumber(cameraName + " target rotation y",
-                    getTargetTransformation(change).getRotation().getY());
-            SmartDashboard.putNumber(cameraName + " target rotation z",
-                    getTargetTransformation(change).getRotation().getZ());
-            SmartDashboard.putNumber(cameraName + " target ID",
-                    camera.getAllUnreadResults().get(0).getBestTarget().fiducialId);
+        try {
+            for (PhotonPipelineResult change : camera.getAllUnreadResults()) {
+                SmartDashboard.putNumber(cameraName + "target transform x",
+                        getTargetTransformation(change).getX());
+                SmartDashboard.putNumber(cameraName + " target transform y", getTargetTransformation(change).getY());
+                SmartDashboard.putNumber(cameraName + " target transform z", getTargetTransformation(change).getZ());
+                SmartDashboard.putNumber(cameraName + " target rotation x",
+                        getTargetTransformation(change).getRotation().getX());
+                SmartDashboard.putNumber(cameraName + " target rotation y",
+                        getTargetTransformation(change).getRotation().getY());
+                SmartDashboard.putNumber(cameraName + " target rotation z",
+                        getTargetTransformation(change).getRotation().getZ());
+                SmartDashboard.putNumber(cameraName + " target ID",
+                        camera.getAllUnreadResults().get(0).getBestTarget().fiducialId);
+            }
+        } catch (Exception ex) {
+            SmartDashboard.putString("Errors", cameraName + " target reading failed!");
         }
     }
 

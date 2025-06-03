@@ -44,8 +44,8 @@ public class ElevSubsystem extends SubsystemBase{
         feedbackCfg.SensorToMechanismRatio = ELEV_GEARING;
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
-        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(240)).withMotionMagicAcceleration(120)
-        .withMotionMagicJerk(30);
+        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(20)).withMotionMagicAcceleration(10)
+        .withMotionMagicJerk(80);
         //TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
@@ -53,9 +53,9 @@ public class ElevSubsystem extends SubsystemBase{
         if (Utils.isSimulation()) {
             slot0.kS = 0.0;
             slot0.kG = 0.05;//0.091;// PRE VOLTAGE MULTIPLICATION -> 0.69;//.7> && .67< 
-            slot0.kA = 0.1;
-            slot0.kV = 0.1;
-            slot0.kP = 0.2;
+            slot0.kA = 0.01;
+            slot0.kV = 0.01;
+            slot0.kP = 0.4;
             slot0.kI = 0.0;
             slot0.kD = 0.0;
         } else {

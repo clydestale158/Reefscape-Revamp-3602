@@ -13,6 +13,12 @@ public class Constants {
         public final static int INTAKE_MOTOR_ID = 56;
         public final static int PIVOT_ENCODER_ID = 34;
         public final static int INTAKE_LASER_ID = 31;
+
+        // public final static int DRIVE_LEFT_INNER_LASER_ID = 0;// TODO check
+        // public final static int DRIVE_LEFT_OUTER_LASER_ID = 0;// TODO check
+        // public final static int DRIVE_RIGHT_INNER_LASER_ID = 0;// TODO check
+        // public final static int DRIVE_RIGHT_OUTER_LASER_ID = 0;// TODO check
+
         public final static int DRIVE_LASER_ID = 0;// TODO check
         public final static int PIVOT_CANCODER_ID = 1; // TODO check
 

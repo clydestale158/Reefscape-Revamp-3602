@@ -25,6 +25,7 @@ public class RobotContainer {
     private CommandJoystick joystick;
     private CommandJoystick joystick2;
     private CommandXboxController xbox;
+    @SuppressWarnings("unused")
     private CommandXboxController xbox2;
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -35,10 +36,13 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDeadband(MaxSpeed * 0.1)
             .withRotationalDeadband(MaxAngularRate * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+    private final SwerveRequest.RobotCentric teleopDrive = new SwerveRequest.RobotCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
     private final DrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
     private final ElevSubsystem elevSubsystem = new ElevSubsystem();
-    private  PivotSubsystem pivotSubsystem;// = new PivotSubsystem(joystick);
-    private  Superstructure superstructure;// = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
+    private PivotSubsystem pivotSubsystem;// = new PivotSubsystem(joystick);
+    private Superstructure superstructure;// = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
     private Simulation simulation;
 
     private final Vision vision = new Vision();
@@ -73,7 +77,8 @@ public class RobotContainer {
 
         configDefaultCommands();
         configNamedCommands();
-        drivetrain.configAutoBuilder(autoChooser);
+        drivetrain.configAutoBuilder();
+        autoChooser = drivetrain.autoChooser;
 
     }
 
@@ -118,7 +123,9 @@ public class RobotContainer {
 
         xbox.povDown().onTrue(superstructure.intakeCoral());
         xbox.povUp().onTrue(superstructure.outtakeCoral());
-
+        
+        xbox.povRight().whileTrue(drivetrain.applyRequest(()-> teleopDrive.withVelocityX(-0.3)).until(()-> drivetrain.seesReef()));
+        xbox.povLeft().whileTrue(drivetrain.applyRequest(()-> teleopDrive.withVelocityX(0.3)).until(()-> drivetrain.seesReef()));
 
     }
 

@@ -15,14 +15,14 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import static frc.team3602.robot.Constants.ElevConstants.*;
 
 public class Superstructure {
-    private DrivetrainSubsystem driveSubsys;
-    private PivotSubsystem pivotSubsys;
-    private ElevSubsystem elevSubsys;
+    private final DrivetrainSubsystem driveSubsys;
+    private final PivotSubsystem pivotSubsys;
+    private final ElevSubsystem elevSubsys;
 
-    private SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
+    private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private SwerveRequest.RobotCentric teleopDrive = new SwerveRequest.RobotCentric()
+    private final SwerveRequest.RobotCentric teleopDrive = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     public Superstructure(DrivetrainSubsystem driveSubsys, PivotSubsystem pivotSubsys, ElevSubsystem elevSubsys) {
@@ -119,5 +119,22 @@ public class Superstructure {
         );
     }
 
+    public Command intakeAlgaeL3(){
+        return sequence(
+            setElevator(ELEV_L2_ALGAE),
+            setPivot(INTAKE_ALGAE_ANGLE),
+            pivotSubsys.intakeAlgae().until(()-> pivotSubsys.hasAlgae())
+        );
+    }
+
+    public Command autoAlignLeft(){
+        return driveSubsys.applyRequest(()->autoDrive.withSpeeds(new ChassisSpeeds(0.3, 0, 0)))
+            .until(()-> driveSubsys.seesReef());
+    }
+
+    public Command autoAlignRight(){
+        return driveSubsys.applyRequest(()->autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0)))
+            .until(()-> driveSubsys.seesReef());
+    }
 
 }
