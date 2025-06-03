@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/**just an elevator subsystem that does NOT use motion magic */
-public class SpareElevSubsys extends SubsystemBase{
+/** just an elevator subsystem that does NOT use motion magic */
+public class SpareElevSubsys extends SubsystemBase {
     private final TalonFX motor = new TalonFX(ELEV_LEAD_MOTOR_ID);
     private final TalonFX followerMotor = new TalonFX(ELEV_FOLLOW_MOTOR_ID);
 
@@ -34,15 +34,15 @@ public class SpareElevSubsys extends SubsystemBase{
     private double setpoint = startingHeight;
 
     public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 4,
-       Units.inchesToMeters(1), -0.1, 3, true, startingHeight);
+            Units.inchesToMeters(1), -0.1, 3, true, startingHeight);
 
-    public SpareElevSubsys(){
-        if(RobotBase.isSimulation()){
+    public SpareElevSubsys() {
+        if (RobotBase.isSimulation()) {
             controller = new PIDController(0, 0, 0);
-            ffeController = new ElevatorFeedforward(0, 0.5, 0, 0);
+            ffeController = new ElevatorFeedforward(0, 0.5, 0);
         } else {
             controller = new PIDController(0, 0, 0);
-            ffeController = new ElevatorFeedforward(0, 0.5, 0, 0); 
+            ffeController = new ElevatorFeedforward(0, 0.5, 0);
 
         }
 
@@ -50,8 +50,8 @@ public class SpareElevSubsys extends SubsystemBase{
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;
         outputCfg.NeutralMode = NeutralModeValue.Brake;
-        //default is counterclockwise
-        outputCfg.Inverted = InvertedValue.Clockwise_Positive;//TODO check
+        // default is counterclockwise
+        outputCfg.Inverted = InvertedValue.Clockwise_Positive;// TODO check
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = ELEV_CURRENT_LIMIT;
@@ -59,34 +59,40 @@ public class SpareElevSubsys extends SubsystemBase{
         followerMotor.setControl(new Follower(ELEV_LEAD_MOTOR_ID, false));
     }
 
-     public Command setHeight(double newHeight){
-        return runOnce(() ->{
+    public Command setHeight(double newHeight) {
+        return runOnce(() -> {
             setpoint = newHeight;
         });
     }
 
-/**method that returns the elevator rotor position (or meters in a simulation) */
-public double getEncoder() {
-    if (Utils.isSimulation()) {
-        return elevSim.getPositionMeters();
-    } else {
-        return motor.getRotorPosition().getValueAsDouble();
+    /**
+     * method that returns the elevator rotor position (or meters in a simulation)
+     */
+    public double getEncoder() {
+        if (Utils.isSimulation()) {
+            return elevSim.getPositionMeters();
+        } else {
+            return motor.getRotorPosition().getValueAsDouble();
+        }
     }
-}
 
-    public boolean isNearGoal(){
+    public double getEffort(){
+        return ffeController.calculate(motor.getVelocity().getValueAsDouble()) + controller.calculate(getEncoder(), setpoint);//TODO debate the velocity thing & approach with caution!
+    }
+
+    public boolean isNearGoal() {
         return MathUtil.isNear(setpoint, getEncoder(), 1.5);
     }
 
-    @Override 
-    public void simulationPeriodic(){
+    @Override
+    public void simulationPeriodic() {
         elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 16);
-        elevSim.update(0.001);    }
+        elevSim.update(0.001);
+    }
 
-
-    @Override 
-    public void periodic(){
-SmartDashboard.putNumber("Elevator encoder", getEncoder());
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Elevator encoder", getEncoder());
         SmartDashboard.putNumber("Elevator setpoint", setpoint);
 
         SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());

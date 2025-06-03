@@ -70,10 +70,10 @@ public class RobotContainer {
             xbox = new CommandXboxController(0);
             xbox2 = new CommandXboxController(1);
 
-            //configButtonBindings();
+            // configButtonBindings();
         }
 
-        //TODO instiantiate pivot subsys and superstructure!!!!
+        // TODO instiantiate pivot subsys and superstructure!!!!
 
         configDefaultCommands();
         configNamedCommands();
@@ -112,10 +112,9 @@ public class RobotContainer {
         joystick2.button(3).onTrue(elevSubsystem.setHeight(1.0));
         joystick2.button(4).onTrue(elevSubsystem.setHeight(1.5));
 
-        
     }
 
-    private void configButtonBindings(){
+    private void configButtonBindings() {
         xbox.a().onTrue(superstructure.setElevator(ELEV_DOWN));
         xbox.b().onTrue(superstructure.scoreCoralL2());
         xbox.x().onTrue(superstructure.scoreCoralL3());
@@ -123,9 +122,11 @@ public class RobotContainer {
 
         xbox.povDown().onTrue(superstructure.intakeCoral());
         xbox.povUp().onTrue(superstructure.outtakeCoral());
-        
-        xbox.povRight().whileTrue(drivetrain.applyRequest(()-> teleopDrive.withVelocityX(-0.3)).until(()-> drivetrain.seesReef()));
-        xbox.povLeft().whileTrue(drivetrain.applyRequest(()-> teleopDrive.withVelocityX(0.3)).until(()-> drivetrain.seesReef()));
+
+        xbox.povRight().whileTrue(
+                drivetrain.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).until(() -> drivetrain.seesReef()));
+        xbox.povLeft().whileTrue(
+                drivetrain.applyRequest(() -> teleopDrive.withVelocityX(0.3)).until(() -> drivetrain.seesReef()));
 
     }
 

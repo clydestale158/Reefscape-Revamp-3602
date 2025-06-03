@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -66,7 +67,7 @@ public class PivotSubsystem extends SubsystemBase {
             this.joystick = joystick;
 
             slot0.kS = 0.0;
-            slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
+            //slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
             slot0.kA = 0.2;
             slot0.kV = 0.1;
             slot0.kP = 0.2;//1>>
@@ -91,7 +92,6 @@ public class PivotSubsystem extends SubsystemBase {
         }
 
         pivot = new TalonPivot("Pivot", pivotMotor, pivotSim, cfg);
-
     }
 
     /** Run once command that changes the setpoint of the pivot */
@@ -151,7 +151,7 @@ public class PivotSubsystem extends SubsystemBase {
         if(RobotBase.isSimulation()){
             return joystick.button(2).getAsBoolean();
         } else {
-            return intakeMotor.getTorqueCurrent().getValueAsDouble() > 20;
+            return intakeMotor.getTorqueCurrent().getValueAsDouble() > 20;//TODO change w testing
         }
     }
 

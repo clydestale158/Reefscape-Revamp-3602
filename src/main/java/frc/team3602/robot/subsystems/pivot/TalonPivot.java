@@ -17,6 +17,9 @@ public class TalonPivot {
 
     public double setpoint;
 
+    private ArmFeedforward ffeController = new ArmFeedforward(0, 0.3, 0.1, 0);//TODO properly implement to be sim/real life compatable
+
+
     private final SingleJointedArmSim pivotSim;
 
     private final TalonFXConfiguration configs;
@@ -63,12 +66,13 @@ public class TalonPivot {
         setpoint = newAngle;
     }
 
+
     /**
      * call (preferably periodically) to set the control of the motors using motion
      * magic
      */
     public void updateMotorControl() {
-        motor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0));
+        motor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0).withFeedForward(ffeController.calculate(Units.degreesToRadians(getEncoder()), motor.getVelocity().getValueAsDouble())));
     }
 
     /**Updates the elevator sim input */
