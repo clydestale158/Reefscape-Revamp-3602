@@ -71,8 +71,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   // private LaserCan rightInnerLaser = new LaserCan(DRIVE_RIGHT_INNER_LASER_ID);
   // private LaserCan rightOuterLaser = new LaserCan(DRIVE_RIGHT_OUTER_LASER_ID);
 
-  private final LaserCan alignmentLASER = new LaserCan(DRIVE_LASER_ID);
-  private double distance = 0.0;
+  
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
