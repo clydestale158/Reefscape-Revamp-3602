@@ -19,7 +19,6 @@ import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.drive.generated.TunerConstants;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
 import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
-import frc.team3602.robot.vision.Vision;
 
 public class RobotContainer {
     private CommandJoystick joystick;
@@ -45,8 +44,6 @@ public class RobotContainer {
     private Superstructure superstructure;// = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
     private Simulation simulation;
 
-    private final Vision vision = new Vision();
-
     public SendableChooser<Command> autoChooser;
     private final SendableChooser<Double> polarityChooser = new SendableChooser<>();
 
@@ -65,7 +62,6 @@ public class RobotContainer {
             simulation = new Simulation(elevSubsystem, pivotSubsystem);
             configSimButtonBindings();
 
-            vision.reset();
         } else {
             xbox = new CommandXboxController(0);
             xbox2 = new CommandXboxController(1);
@@ -151,11 +147,6 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Score Coral", superstructure.autoScoreCoral());
         NamedCommands.registerCommand("Score Coral L4", superstructure.autoScoreCoralL4());
-    }
-
-    public void updateVision() {
-        vision.updateViz(drivetrain.getState().Pose);
-        vision.updateDashboard();
     }
 
 }
