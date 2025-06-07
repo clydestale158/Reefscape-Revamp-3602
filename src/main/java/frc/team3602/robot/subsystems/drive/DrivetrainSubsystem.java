@@ -25,6 +25,7 @@ import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -48,6 +49,12 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
+  
+  private final LaserCan leftLaser = new LaserCan(53);
+  private final LaserCan rightLaser = new LaserCan(52);
+
+  public final static double rightDriveLaserDistance = 290.0;//210//$190//235 BAD  //$260
+    public final static double leftDriveLaserDistance = 290;//180    //$260
 
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -253,8 +260,35 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     return m_sysIdRoutineToApply.dynamic(direction);
   }
 
+  public boolean seesRightSensor(){
+    try{
+    LaserCan.Measurement RightMeas = rightLaser.getMeasurement();
+    return (RightMeas.distance_mm < rightDriveLaserDistance); //&& RightMeas.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+
+    } catch(NullPointerException r){
+    DriverStation.reportError("right sensor is null", r.getStackTrace());
+    return false;
+    }
+    }
+
+    public boolean seesLeftSensor() {
+      try {
+          LaserCan.Measurement leftMeas = leftLaser.getMeasurement();
+          return (leftMeas.distance_mm < leftDriveLaserDistance
+                  && leftMeas.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+      } catch (NullPointerException l) {
+          DriverStation.reportError("left sensor is null", l.getStackTrace());
+          return false;
+      }
+
+  }
+  
+  public Command stop() {
+        return runOnce(() -> this.setControl(m_pathApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
+    }
   @Override
-  public void periodic() {
+  public void periodic() {}
+  
     /*
      * Periodically try to apply the operator perspective.
      * If we haven't applied the operator perspective before, then we should apply
@@ -266,19 +300,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
      * This ensures driving behavior doesn't change until an explicit disable event
      * occurs during testing.
      */
-    if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-      DriverStation.getAlliance().ifPresent(allianceColor -> {
-        setOperatorPerspectiveForward(
-            allianceColor == Alliance.Red
-                ? kRedAlliancePerspectiveRotation
-                : kBlueAlliancePerspectiveRotation);
-        m_hasAppliedOperatorPerspective = true;
-      });
-    }
+  
 
-    distance = getDistanceFromReef();
-    SmartDashboard.putNumber("LASER", distance);
-  }
 
   private void startSimThread() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
@@ -426,21 +449,9 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   // }
   // }
 
-  public double getDistanceFromReef() {
-    if (RobotBase.isSimulation()) {
-      return 12;// TODO change lol
-    } else {
-      return (alignmentLASER.getMeasurement().distance_mm / 1000.0);
-    }
-  }
+  
 
-  public boolean seesReef(){
-    if (RobotBase.isSimulation()) {
-      return false;// TODO change lol
-    } else {
-      return (alignmentLASER.getMeasurement().distance_mm) < 1000;
-    }
-  }
+  
 
   /**
    * Config for pathplanner's auto builder. MUST be called only AFTER named

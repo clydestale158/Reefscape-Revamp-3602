@@ -2,6 +2,7 @@ package frc.team3602.robot;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
 import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
@@ -18,6 +19,9 @@ public class Superstructure {
     private final DrivetrainSubsystem driveSubsys;
     private final PivotSubsystem pivotSubsys;
     private final ElevSubsystem elevSubsys;
+
+    private SwerveRequest.ApplyRobotSpeeds autoRobotDrive = new SwerveRequest.ApplyRobotSpeeds();
+
 
     private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -127,14 +131,27 @@ public class Superstructure {
         );
     }
 
-    public Command autoAlignLeft(){
-        return driveSubsys.applyRequest(()->autoDrive.withSpeeds(new ChassisSpeeds(0.3, 0, 0)))
-            .until(()-> driveSubsys.seesReef());
+      public Command autoAlignLeft() {
+        return Commands.sequence(
+                driveSubsys.applyRequest(() -> autoRobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.6, 0.0)))
+                        .until(() -> !driveSubsys.seesLeftSensor()),
+                driveSubsys.stop()
+        // Commands.none()
+        );
     }
 
-    public Command autoAlignRight(){
-        return driveSubsys.applyRequest(()->autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0)))
-            .until(()-> driveSubsys.seesReef());
+    public Command autoAlignRight() {
+        return Commands.sequence(
+                driveSubsys.applyRequest(() -> autoRobotDrive.withSpeeds(new ChassisSpeeds(0.0, -0.75, 0.0)))
+                        .until(() -> !driveSubsys.seesRightSensor()), // 0.3
+                driveSubsys.stop()
+        // drivetrainSubsystem.applyRequest(() -> robotDrive.withSpeeds(new
+        // ChassisSpeeds(0.0, 0.0, 0.0))).until(() ->
+        // !drivetrainSubsystem.seesRightSensor()),
+        // Commands.none() 
+        );
     }
+
+   
 
 }

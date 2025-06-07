@@ -124,9 +124,18 @@ public class RobotContainer {
         xbox.povUp().onTrue(superstructure.outtakeCoral());
 
         xbox.povRight().whileTrue(
-                drivetrain.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).until(() -> drivetrain.seesReef()));
-        xbox.povLeft().whileTrue(
-                drivetrain.applyRequest(() -> teleopDrive.withVelocityX(0.3)).until(() -> drivetrain.seesReef()));
+            // rumblyRightAlign()
+            drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
+                            .withVelocityY(-0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
+                            .withRotationalRate(0.0))
+                            .until(() -> !drivetrain.seesRightSensor()));
+
+                            xbox.povRight().whileTrue(
+            // rumblyRightAlign()
+            drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
+                            .withVelocityY(0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
+                            .withRotationalRate(0.0))
+                            .until(() -> !drivetrain.seesLeftSensor()));
 
     }
 
