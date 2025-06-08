@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 99);
+    Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe take out, OR use to our advantage
     CommandScheduler.getInstance().run();
 
     Threads.setCurrentThreadPriority(false, 10);
