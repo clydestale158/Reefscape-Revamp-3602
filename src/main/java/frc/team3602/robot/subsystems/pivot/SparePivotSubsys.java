@@ -184,7 +184,7 @@ public class SparePivotSubsys extends SubsystemBase {
 
     @Override
     public void periodic() {
-        pivotMotor.setVoltage(getEffort());
+        //pivotMotor.setVoltage(getEffort());
         SmartDashboard.putNumber("Pivot encoder", getEncoder());
         SmartDashboard.putNumber("Pivot setpoint", setpoint);
 

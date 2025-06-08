@@ -24,7 +24,6 @@ public class RobotContainer {
     private CommandJoystick joystick;
     private CommandJoystick joystick2;
     private CommandXboxController xbox;
-    @SuppressWarnings("unused")
     private CommandXboxController xbox2;
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -46,6 +45,8 @@ public class RobotContainer {
 
     public SendableChooser<Command> autoChooser;
     private final SendableChooser<Double> polarityChooser = new SendableChooser<>();
+    
+
 
     public RobotContainer() {
 
@@ -59,17 +60,21 @@ public class RobotContainer {
             joystick2 = new CommandJoystick(1);
             pivotSubsystem = new PivotSubsystem(joystick);
             superstructure = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
-            simulation = new Simulation(elevSubsystem, pivotSubsystem);
+            //simulation = new Simulation(elevSubsystem, pivotSubsystem);
             configSimButtonBindings();
 
         } else {
             xbox = new CommandXboxController(0);
             xbox2 = new CommandXboxController(1);
+            pivotSubsystem = new PivotSubsystem(joystick);
+            superstructure = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
 
-            // configButtonBindings();
+            configButtonBindings();
         }
 
-        // TODO instiantiate pivot subsys and superstructure!!!!
+        
+
+        // TODO add second pivot constructor for sim/real life
 
         configDefaultCommands();
         configNamedCommands();
@@ -111,27 +116,34 @@ public class RobotContainer {
     }
 
     private void configButtonBindings() {
-        xbox.a().onTrue(superstructure.setElevator(ELEV_DOWN));
-        xbox.b().onTrue(superstructure.scoreCoralL2());
-        xbox.x().onTrue(superstructure.scoreCoralL3());
-        xbox.y().onTrue(superstructure.scoreCoralL4());
+        // xbox.a().onTrue(superstructure.setElevator(ELEV_DOWN));
+        // xbox.b().onTrue(superstructure.scoreCoralL2());
+        // xbox.x().onTrue(superstructure.scoreCoralL3());
+        // xbox.y().onTrue(superstructure.scoreCoralL4());
 
-        xbox.povDown().onTrue(superstructure.intakeCoral());
-        xbox.povUp().onTrue(superstructure.outtakeCoral());
+        // xbox.povDown().onTrue(superstructure.intakeCoral());
+        // xbox.povUp().onTrue(superstructure.outtakeCoral());
 
-        xbox.povRight().whileTrue(
-            // rumblyRightAlign()
-            drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
-                            .withVelocityY(-0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
-                            .withRotationalRate(0.0))
-                            .until(() -> !drivetrain.seesRightSensor()));
+        // xbox.povRight().whileTrue(
+        //     // rumblyRightAlign()
+        //     drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
+        //                     .withVelocityY(-0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
+        //                     .withRotationalRate(0.0))
+        //                     .until(() -> !drivetrain.seesRightSensor()));
 
-                            xbox.povRight().whileTrue(
-            // rumblyRightAlign()
-            drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
-                            .withVelocityY(0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
-                            .withRotationalRate(0.0))
-                            .until(() -> !drivetrain.seesLeftSensor()));
+        //                     xbox.povRight().whileTrue(
+        //     // rumblyRightAlign()
+        //     drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
+        //                     .withVelocityY(0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
+        //                     .withRotationalRate(0.0))
+        //                     .until(() -> !drivetrain.seesLeftSensor()));
+
+        xbox.a().onTrue(elevSubsystem.setHeight(ELEV_DOWN));
+        xbox.b().onTrue(elevSubsystem.setHeight(ELEV_L2));
+        xbox.x().onTrue(elevSubsystem.setHeight(ELEV_L3));
+        xbox.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
+
+
 
     }
 

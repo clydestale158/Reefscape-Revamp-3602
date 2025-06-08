@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
+import frc.team3602.robot.subsystems.elevator.WeirdElevSubsystem;
 import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -19,9 +20,6 @@ public class Superstructure {
     private final DrivetrainSubsystem driveSubsys;
     private final PivotSubsystem pivotSubsys;
     private final ElevSubsystem elevSubsys;
-
-    private SwerveRequest.ApplyRobotSpeeds autoRobotDrive = new SwerveRequest.ApplyRobotSpeeds();
-
 
     private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -122,7 +120,7 @@ public class Superstructure {
             pivotSubsys.intakeAlgae().until(()-> pivotSubsys.hasAlgae())
         );
     }
-
+ 
     public Command intakeAlgaeL3(){
         return sequence(
             setElevator(ELEV_L2_ALGAE),
@@ -131,27 +129,17 @@ public class Superstructure {
         );
     }
 
-      public Command autoAlignLeft() {
+    public Command autoAlignLeft() {
         return Commands.sequence(
-                driveSubsys.applyRequest(() -> autoRobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.6, 0.0)))
-                        .until(() -> !driveSubsys.seesLeftSensor()),
-                driveSubsys.stop()
-        // Commands.none()
+                driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, 0.6, 0.0)))
+                        .until(() -> !driveSubsys.seesLeftSensor())
         );
     }
 
     public Command autoAlignRight() {
         return Commands.sequence(
-                driveSubsys.applyRequest(() -> autoRobotDrive.withSpeeds(new ChassisSpeeds(0.0, -0.75, 0.0)))
-                        .until(() -> !driveSubsys.seesRightSensor()), // 0.3
-                driveSubsys.stop()
-        // drivetrainSubsystem.applyRequest(() -> robotDrive.withSpeeds(new
-        // ChassisSpeeds(0.0, 0.0, 0.0))).until(() ->
-        // !drivetrainSubsystem.seesRightSensor()),
-        // Commands.none() 
+                driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, -0.75, 0.0)))
+                        .until(() -> !driveSubsys.seesRightSensor())
         );
     }
-
-   
-
 }

@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
+import frc.team3602.robot.subsystems.elevator.WeirdElevSubsystem;
 import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 
 public class Simulation extends SubsystemBase {
-    private ElevSubsystem elevSubsys;
+    private WeirdElevSubsystem elevSubsys;
     private PivotSubsystem pivotSubsys;
 
     // Colors
@@ -27,7 +27,7 @@ public class Simulation extends SubsystemBase {
 
     private final FlywheelSim intakeSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getKrakenX60(1),0.003, 5), DCMotor.getKrakenX60(1));
 
-    public Simulation(ElevSubsystem elevSubsys, PivotSubsystem pivotSubsys){
+    public Simulation(WeirdElevSubsystem elevSubsys, PivotSubsystem pivotSubsys){
         this.elevSubsys = elevSubsys;
         this.pivotSubsys = pivotSubsys;
 

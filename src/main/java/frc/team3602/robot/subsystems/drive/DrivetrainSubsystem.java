@@ -25,7 +25,6 @@ import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -49,12 +48,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
-  
-  private final LaserCan leftLaser = new LaserCan(53);
-  private final LaserCan rightLaser = new LaserCan(52);
-
-  public final static double rightDriveLaserDistance = 290.0;//210//$190//235 BAD  //$260
-    public final static double leftDriveLaserDistance = 290;//180    //$260
 
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -71,14 +64,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
   private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-
-  // //TODO request FOUR lasers? could be fire...
-  // private LaserCan leftInnerLaser = new LaserCan(DRIVE_LEFT_INNER_LASER_ID);
-  // private LaserCan leftOuterLaser = new LaserCan(DRIVE_LEFT_OUTER_LASER_ID);
-  // private LaserCan rightInnerLaser = new LaserCan(DRIVE_RIGHT_INNER_LASER_ID);
-  // private LaserCan rightOuterLaser = new LaserCan(DRIVE_RIGHT_OUTER_LASER_ID);
-
-  
+  private final LaserCan leftLaser = new LaserCan(DRIVE_LEFT_LASER_ID);
+  private final LaserCan rightLaser = new LaserCan(DRIVE_RIGHT_LASER_ID);
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
@@ -260,35 +247,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     return m_sysIdRoutineToApply.dynamic(direction);
   }
 
-  public boolean seesRightSensor(){
-    try{
-    LaserCan.Measurement RightMeas = rightLaser.getMeasurement();
-    return (RightMeas.distance_mm < rightDriveLaserDistance); //&& RightMeas.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
-
-    } catch(NullPointerException r){
-    DriverStation.reportError("right sensor is null", r.getStackTrace());
-    return false;
-    }
-    }
-
-    public boolean seesLeftSensor() {
-      try {
-          LaserCan.Measurement leftMeas = leftLaser.getMeasurement();
-          return (leftMeas.distance_mm < leftDriveLaserDistance
-                  && leftMeas.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
-      } catch (NullPointerException l) {
-          DriverStation.reportError("left sensor is null", l.getStackTrace());
-          return false;
-      }
-
-  }
-  
-  public Command stop() {
-        return runOnce(() -> this.setControl(m_pathApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
-    }
   @Override
-  public void periodic() {}
-  
+  public void periodic() {
     /*
      * Periodically try to apply the operator perspective.
      * If we haven't applied the operator perspective before, then we should apply
@@ -300,8 +260,39 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
      * This ensures driving behavior doesn't change until an explicit disable event
      * occurs during testing.
      */
-  
+    if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+      DriverStation.getAlliance().ifPresent(allianceColor -> {
+        setOperatorPerspectiveForward(
+            allianceColor == Alliance.Red
+                ? kRedAlliancePerspectiveRotation
+                : kBlueAlliancePerspectiveRotation);
+        m_hasAppliedOperatorPerspective = true;
+      });
+    }
+  }
 
+  public boolean seesLeftSensor() {
+    try {
+        LaserCan.Measurement leftMeas = leftLaser.getMeasurement();
+        return (leftMeas.distance_mm < 290
+                && leftMeas.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+    } catch (NullPointerException l) {
+        DriverStation.reportError("left sensor is null", l.getStackTrace());
+        return false;
+    }
+
+}
+
+public boolean seesRightSensor(){
+try{
+LaserCan.Measurement RightMeas = rightLaser.getMeasurement();
+return (RightMeas.distance_mm < 290); //&& RightMeas.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+
+} catch(NullPointerException r){
+DriverStation.reportError("right sensor is null", r.getStackTrace());
+return false;
+}
+}
 
   private void startSimThread() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
@@ -317,141 +308,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     });
     m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
-
-  // // NEW
-  // // Pathplanner - create paths on the fly
-
-  // // lists are the points the robot will use to travel along
-  // // TODO make waypoints more accurate & fix with real robot testing
-  // // I don't think it needs red vs blue, but in the meantime, I created some
-  // red
-  // // vars too
-  // // in the var names, barge refers to the barge side of the field. from the
-  // // drivers station, this is the left side of the field
-  // private List<Waypoint> blueFarBargeReefToCoralIntake =
-  // PathPlannerPath.waypointsFromPoses(
-  // new Pose2d(5.7, 6.4, Rotation2d.fromDegrees(-10)),
-  // new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
-  // flyPathPosesConstants.blueBargeCoralIntakePose);
-  // private List<Waypoint> blueCloseBargeReefToCoralIntake =
-  // PathPlannerPath.waypointsFromPoses(
-  // new Pose2d(2.6, 7.3, Rotation2d.fromDegrees(10)),
-  // flyPathPosesConstants.blueBargeCoralIntakePose);
-  // private List<Waypoint> blueFarNONBargeReefToCoralIntake =
-  // PathPlannerPath.waypointsFromPoses(
-  // new Pose2d(5.7, 2.2, Rotation2d.fromDegrees(20)),
-  // new Pose2d(2.6, 1.8, Rotation2d.fromDegrees(60)),
-  // new Pose2d(1.2, 1.8, Rotation2d.fromDegrees(125)),
-
-  // flyPathPosesConstants.blueNONBargeCoralIntakePose);
-  // private List<Waypoint> blueCloseNONBargeReefToCoralIntake =
-  // PathPlannerPath.waypointsFromPoses(
-  // new Pose2d(2.6, 1.8, Rotation2d.fromDegrees(60)),
-  // new Pose2d(1.2, 1.8, Rotation2d.fromDegrees(125)),
-  // flyPathPosesConstants.blueNONBargeCoralIntakePose);
-
-  // private PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 *
-  // Math.PI, 4 * Math.PI);
-
-  // // command to get us to the coral station
-  // // we can use booleans to get our pose and try a path based on that(depending
-  // on
-  // // y, we can go to the other coral station)
-  // public Command flypathToCoralStation() {
-  // if (getState().Pose.getY() >= 4) {
-  // if (getState().Pose.getX() >= 4.5) {
-  // try {
-
-  // // Load the path you want to follow using its name in the GUI
-  // PathPlannerPath flypath = new PathPlannerPath(
-  // blueFarBargeReefToCoralIntake,
-  // constraints,
-  // null, // The ideal starting state, this is only relevant for pre-planned
-  // paths, so can
-  // // be null for on-the-fly paths.
-  // new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can
-  // set a holonomic
-  // // rotation here. If using a differential
-  // // drivetrain, the rotation will have no
-  // // effect.
-  // );
-  // flypath.preventFlipping = true;
-
-  // // Create a path following command using AutoBuilder.
-  // return AutoBuilder.followPath(flypath);
-  // } catch (Exception e) {
-  // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-  // return Commands.none();
-  // }}else{
-  // try{
-
-  // // Load the path you want to follow using its name in the GUI
-  // PathPlannerPath flypath = new PathPlannerPath(
-  // blueCloseBargeReefToCoralIntake,
-  // constraints,
-  // null, // The ideal starting state, this is only relevant for pre-planned
-  // paths, so can be null for on-the-fly paths.
-  // new GoalEndState(0.0, Rotation2d.fromDegrees(35)) // Goal end state. You can
-  // set a holonomic rotation here. If using a differential drivetrain, the
-  // rotation will have no effect.
-  // );
-  // flypath.preventFlipping = true;
-
-  // // Create a path following command using AutoBuilder.
-  // return AutoBuilder.followPath(flypath);
-  // } catch (Exception e) {
-  // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-  // return Commands.none();
-  // }}}else if (getState().Pose.getY() < 4){
-  // if(getState().Pose.getX()>= 4.5){
-  // try{
-
-  // // Load the path you want to follow using its name in the GUI
-  // PathPlannerPath flypath = new PathPlannerPath(
-  // blueFarNONBargeReefToCoralIntake,
-  // constraints,
-  // null, // The ideal starting state, this is only relevant for pre-planned
-  // paths, so can be null for on-the-fly paths.
-  // new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can
-  // set a holonomic rotation here. If using a differential drivetrain, the
-  // rotation will have no effect.
-  // );
-  // flypath.preventFlipping = true;
-
-  // // Create a path following command using AutoBuilder.
-  // return AutoBuilder.followPath(flypath);
-  // } catch (Exception e) {
-  // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-  // return Commands.none();
-  // }}else{
-  // try{
-
-  // // Load the path you want to follow using its name in the GUI
-  // PathPlannerPath flypath = new PathPlannerPath(
-  // blueCloseNONBargeReefToCoralIntake,
-  // constraints,
-  // null, // The ideal starting state, this is only relevant for pre-planned
-  // paths, so can be null for on-the-fly paths.
-  // new GoalEndState(0.0, Rotation2d.fromDegrees(145)) // Goal end state. You can
-  // set a holonomic rotation here. If using a differential drivetrain, the
-  // rotation will have no effect.
-  // );
-  // flypath.preventFlipping = true;
-
-  // // Create a path following command using AutoBuilder.
-  // return AutoBuilder.followPath(flypath);
-  // } catch (Exception e) {
-  // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-  // return Commands.none();
-  // }
-  // }} else{
-  // return Commands.none();
-  // }
-  // }
-
-  
-
-  
 
   /**
    * Config for pathplanner's auto builder. MUST be called only AFTER named
@@ -479,7 +335,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
           this);
 
       autoChooser = AutoBuilder.buildAutoChooser();
-      SmartDashboard.putData("Auto Chooser", autoChooser);
+      //SmartDashboard.putData("Auto Chooser", autoChooser);
       //autoChooser.setDefaultOption("null", print("You skibidi messed up big time, pure buns brat behavior"));
     } catch (Exception ex) {
       DriverStation.reportError("Pathplanner auto builder config FAILED", ex.getStackTrace());

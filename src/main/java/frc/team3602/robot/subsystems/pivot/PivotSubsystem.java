@@ -162,9 +162,9 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        pivot.updateDashboard();
-        pivot.updateMotorControl();
+        //pivot.updateDashboard(); //TODO add back in - potential fix for periodic overruns
+        //pivot.updateMotorControl();
 
-        SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());
+        //SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());//TODO add back in - potential fix for periodic overruns
     }
 }

@@ -38,10 +38,6 @@ public class Robot extends TimedRobot {
     Threads.setCurrentThreadPriority(true, 99);
     CommandScheduler.getInstance().run();
 
-    if (RobotBase.isSimulation()) {
-      robotContainer.updateVision();
-    }
-
     Threads.setCurrentThreadPriority(false, 10);
   }
 
