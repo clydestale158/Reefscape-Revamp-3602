@@ -15,7 +15,7 @@ public class Constants {
         public final static int DRIVE_LEFT_LASER_ID = 55;
         public final static int DRIVE_RIGHT_LASER_ID = 54;
        
-
+        //gearing and current limits
         public final static double ELEV_GEARING = 12;
         public final static double ELEV_CURRENT_LIMIT = 35;
 
@@ -24,16 +24,16 @@ public class Constants {
     }
 
     public class PivotConstants{
+        //intake speeds
         public final static double INTAKE_SPEED = 0.5;//TODO check/fix irl
         public final static double SCORE_SPEED = 0.5;//TODO check/fix irl
         public final static double INTAKE_ALGAE_SPEED = 0.5;//TODO check/fix irl
         public final static double HOLD_ALGAE_SPEED = 0.5;//TODO check/fix irl
 
-
+        //pivot angles
         public final static double INTAKE_ANGLE = 110;//TODO check/fix irl
         public final static double STOW_ANGLE = 80;//TODO check/fix irl
         public final static double INTAKE_ALGAE_ANGLE = 110;//TODO check/fix irl
-
 
         public final static double SCORE_ANGLE = 80;//TODO check/fix irl
         public final static double SCORE_L4_ANGLE = 70;//TODO check/fix irl
@@ -41,7 +41,7 @@ public class Constants {
 
     public class ElevConstants{
         public final static double ELEV_DOWN = 0.0;
-        public final static double ELEV_L1 = 4;//TODO change back to 2
+        public final static double ELEV_L1 = 2;
         public final static double ELEV_L2 = 6.5;
         public final static double ELEV_L3 = 16;
         public final static double ELEV_L4 = 33;

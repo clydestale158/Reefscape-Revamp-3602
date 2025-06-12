@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,17 +19,22 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/**Weird subsystem that uses the weird utility type class that i dont like */
+/**Weird subsystem that NO LONGER uses the weird utility type class that i dont like */
+//AKA its just a subsys that uses motion magic
 public class WeirdElevSubsystem extends SubsystemBase{
     private final TalonFX leadMotor = new TalonFX(ELEV_LEAD_MOTOR_ID);
     private final TalonFX followerMotor = new TalonFX(ELEV_FOLLOW_MOTOR_ID);
     
-    private TalonElevator elevator;
+    //private TalonElevator elevator;
+
 
     public final double startingHeight = 0.6;
+    private double setpoint = startingHeight;
+    private final MotionMagicVoltage controller = new MotionMagicVoltage(setpoint);
 
     public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 8, 0.5, -0.01, Units.inchesToMeters(72), true, startingHeight);
 
@@ -70,27 +76,43 @@ public class WeirdElevSubsystem extends SubsystemBase{
             slot0.kD = 0.0;
         }
 
-        elevator = new TalonElevator("Elevator", leadMotor, followerMotor, false, 0, cfg, elevSim);
+        //elevator = new TalonElevator("Elevator", leadMotor, followerMotor, false, 0, cfg, elevSim);
     }
 
     public Command setHeight(double newHeight){
         return runOnce(() ->{
-            elevator.setHeight(newHeight);
+            setpoint = newHeight;
         });
     }
 
+        /**method that returns the elevator rotor position (or meters in a simulation) */
+        public double getEncoder() {
+            if (Utils.isSimulation()) {
+                return elevSim.getPositionMeters();
+            } else {
+                return leadMotor.getRotorPosition().getValueAsDouble();
+            }
+        }
+
     public boolean isNearGoal(){
-        return MathUtil.isNear(elevator.setpoint, elevator.getEncoder(), 1.5);
+        return MathUtil.isNear(setpoint, getEncoder(), 1.5);
     }
 
     @Override 
     public void simulationPeriodic(){
-        elevator.updateSim();
-    }
+        elevSim.setInput(leadMotor.getMotorVoltage().getValueAsDouble() * 16);
+        elevSim.update(0.001);    }
 
     @Override
     public void periodic(){
-        elevator.updateDashboard();
-        elevator.updateMotorControl();
+        SmartDashboard.putNumber("Elevator encoder", getEncoder());
+        SmartDashboard.putNumber("Elevator setpoint", setpoint);
+
+        SmartDashboard.putNumber("Elevator set voltage", leadMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator follower set voltage",
+                followerMotor.getMotorVoltage().getValueAsDouble());
+
+        SmartDashboard.putNumber("Elevator velocity", leadMotor.getVelocity().getValueAsDouble());
+        leadMotor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0));
     }
 }
