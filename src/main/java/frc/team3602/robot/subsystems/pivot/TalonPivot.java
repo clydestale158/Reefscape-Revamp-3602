@@ -6,19 +6,16 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**Weird utility type class that I dont really like but we might end up using */
 public class TalonPivot {
     private final String pivotName;
     private final TalonFX motor;
 
     public double setpoint;
-
-    private ArmFeedforward ffeController = new ArmFeedforward(0, 0.3, 0.1, 0);//TODO properly implement to be sim/real life compatable
-
 
     private final SingleJointedArmSim pivotSim;
 
@@ -71,8 +68,8 @@ public class TalonPivot {
      * call (preferably periodically) to set the control of the motors using motion
      * magic
      */
-    public void updateMotorControl() {
-        motor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0).withFeedForward(ffeController.calculate(Units.degreesToRadians(getEncoder()), motor.getVelocity().getValueAsDouble())));
+    public void updateMotorControl(double ffe) {
+        motor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0).withFeedForward(ffe));
     }
 
     /**Updates the elevator sim input */

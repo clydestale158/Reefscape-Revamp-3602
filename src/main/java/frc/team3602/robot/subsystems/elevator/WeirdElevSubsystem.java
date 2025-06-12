@@ -11,16 +11,17 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**Weird subsystem that uses the weird utility type class that i dont like */
 public class WeirdElevSubsystem extends SubsystemBase{
     private final TalonFX leadMotor = new TalonFX(ELEV_LEAD_MOTOR_ID);
     private final TalonFX followerMotor = new TalonFX(ELEV_FOLLOW_MOTOR_ID);
@@ -36,6 +37,7 @@ public class WeirdElevSubsystem extends SubsystemBase{
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;
         outputCfg.NeutralMode = NeutralModeValue.Brake;
+        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = ELEV_CURRENT_LIMIT;

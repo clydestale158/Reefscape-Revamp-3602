@@ -22,47 +22,53 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/** just an elevator subsystem that does NOT use motion magic */
+/** just an elevator subsystem that does NOT use motion magic. **USE THIS** */
 public class ElevSubsystem extends SubsystemBase {
+    //Motors
     private final TalonFX motor = new TalonFX(ELEV_LEAD_MOTOR_ID);
     private final TalonFX followerMotor = new TalonFX(ELEV_FOLLOW_MOTOR_ID);
 
+    //Controllers
     private PIDController controller;
     private ElevatorFeedforward ffeController;
 
-    private final double startingHeight = 0;
+    //Setpoints
+    public final double startingHeight = 0;
     private double setpoint = startingHeight;
 
+    //Elev sim
     public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 4,
             Units.inchesToMeters(1), -0.1, 3, true, startingHeight);
 
+    /**Constructor */
     public ElevSubsystem() {
         if (RobotBase.isSimulation()) {
-            controller = new PIDController(0, 0, 0);
+            controller = new PIDController(0, 0, 0);//todo tune eventually
             ffeController = new ElevatorFeedforward(0, 0.5, 0);
         } else {
-            controller = new PIDController(0.5, 0, 0.01);//$kp = 5
-            ffeController = new ElevatorFeedforward(0.06, 0.25, 0);
-
+            controller = new PIDController(0.5, 0, 0.01);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
+            ffeController = new ElevatorFeedforward(0.06, 0.25, 0.1, 0.1);
         }
 
+        //configurations
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;
         outputCfg.NeutralMode = NeutralModeValue.Brake;
-        // default is counterclockwise
         outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = ELEV_CURRENT_LIMIT;
 
+        //config application
         motor.getConfigurator().apply(cfg);
         followerMotor.getConfigurator().apply(cfg);
         
-
+        //setting the control of the follower motor to be a follower of our lead motor
         followerMotor.setControl(new Follower(ELEV_LEAD_MOTOR_ID, false));
     }
 
+    /**Run once command that changes the setpoint of the elevator */
     public Command setHeight(double newHeight) {
         return runOnce(() -> {
             setpoint = newHeight;
@@ -80,30 +86,35 @@ public class ElevSubsystem extends SubsystemBase {
         }
     }
 
-    public double getEffort(){
-        return ffeController.calculate(motor.getVelocity().getValueAsDouble()) + 
-        controller.calculate(getEncoder(), setpoint);//TODO debate the velocity thing & approach with caution!
+    /**returns the combined calculated effort of our ffe and pid controllers*/
+    private double getEffort(){
+        return ffeController.calculate(motor.getVelocity().getValueAsDouble(), motor.getAcceleration().getValueAsDouble()) + //TODO debate velocity and acceleration things. it is new therefore scary (Usually it is 0)
+        controller.calculate(getEncoder(), setpoint);
     }
 
+    /**returns true if the elev encoder and setpoint are within 1.5 units of each other */
     public boolean isNearGoal() {
         return MathUtil.isNear(setpoint, getEncoder(), 1.5);
     }
 
     @Override
     public void simulationPeriodic() {
-        elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 16);
+        //update the elev sim
+        elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 16);//16 is a jank random number. can be changed
         elevSim.update(0.01);
     }
 
     @Override
     public void periodic() {
+        //updating dashboard
         SmartDashboard.putNumber("Elevator encoder", getEncoder());
         SmartDashboard.putNumber("Elevator setpoint", setpoint);
-        SmartDashboard.putNumber("Elevator velocity", motor.getVelocity().getValueAsDouble());//TODO take out if pivot stuff doesn't fix periodic overruns
+        SmartDashboard.putNumber("Elevator velocity", motor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Elevator follower set voltage",
                 followerMotor.getMotorVoltage().getValueAsDouble());
-
+                
+        //updating motor voltage
         motor.setVoltage(getEffort());
     }
 }

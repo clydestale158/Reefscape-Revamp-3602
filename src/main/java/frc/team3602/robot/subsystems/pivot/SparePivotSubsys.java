@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
+/**typical pivot subsystem. kind of a mess yet */
 public class SparePivotSubsys extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
     private final TalonFX intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
@@ -64,6 +65,8 @@ public class SparePivotSubsys extends SubsystemBase {
 
             controller = new PIDController(0, 0, 0);
             ffeController = new ArmFeedforward(0, 0.3, 0, 0);
+
+            laser = new LaserCan(INTAKE_LASER_ID);
         }
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -96,6 +99,11 @@ public class SparePivotSubsys extends SubsystemBase {
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = PIVOT_CURRENT_LIMIT;
+
+        pivotMotor.getConfigurator().apply(cfg);
+
+        laser = new LaserCan(INTAKE_LASER_ID);
+
     }
 
     /** Run once command that changes the setpoint of the pivot */

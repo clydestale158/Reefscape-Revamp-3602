@@ -60,7 +60,7 @@ public class RobotContainer {
             joystick2 = new CommandJoystick(1);
             pivotSubsystem = new PivotSubsystem(joystick);
             superstructure = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
-            //simulation = new Simulation(elevSubsystem, pivotSubsystem);
+            simulation = new Simulation(elevSubsystem, pivotSubsystem);
             configSimButtonBindings();
 
         } else {

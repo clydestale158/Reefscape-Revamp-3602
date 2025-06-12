@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
+/**Weird subsystem that works w the utility type class that I don't really like, but we may end up using */
 public class PivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
     private final TalonFX intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
@@ -38,6 +39,8 @@ public class PivotSubsystem extends SubsystemBase {
     private CommandJoystick joystick;
     public final double startingAngle = 30;
     public double intakeSpeed;// ONLY USED FOR LOGGING AND SIM
+
+    private ArmFeedforward ffeController;
 
     public final TalonPivot pivot;
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), PIVOT_GEARING,
@@ -69,19 +72,23 @@ public class PivotSubsystem extends SubsystemBase {
             slot0.kS = 0.0;
             //slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
             slot0.kA = 0.2;
-            slot0.kV = 0.1;
+            slot0.kV = 0.2;
             slot0.kP = 0.2;//1>>
             slot0.kI = 0.0;
             slot0.kD = 0.0;
 
+            ffeController = new ArmFeedforward(0.1, 0.062, 0.2);
+
         } else {
             slot0.kS = 0.0;
-            slot0.kG = 1.0;
+            //slot0.kG = 1.0;
             slot0.kA = 0.2;
-            slot0.kV = 0.1;
+            slot0.kV = 0.2;
             slot0.kP = 0.0;
             slot0.kI = 0.0;
             slot0.kD = 0.0;
+
+            ffeController = new ArmFeedforward(0, 0.27, 0.2);
 
             pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
 
@@ -155,16 +162,21 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
+    public double getFfe(){
+        return ffeController.calculate(pivot.getEncoder(), pivotMotor.getVelocity().getValueAsDouble());
+    }
+
     @Override
     public void simulationPeriodic() {
         pivot.updateSim();
     }
 
+
     @Override
     public void periodic() {
-        //pivot.updateDashboard(); //TODO add back in - potential fix for periodic overruns
-        //pivot.updateMotorControl();
+        // pivot.updateDashboard(); //TODO add back in - potential fix for periodic overruns
+        // pivot.updateMotorControl(getFfe());
 
-        //SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());//TODO add back in - potential fix for periodic overruns
+        // SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());//TODO add back in - potential fix for periodic overruns
     }
 }
