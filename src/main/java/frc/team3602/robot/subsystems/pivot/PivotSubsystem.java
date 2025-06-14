@@ -28,7 +28,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
-/**Weird subsystem that works w the utility type class that I don't really like, but we may end up using */
+/**
+ * Weird subsystem that works w the utility type class that I don't really like,
+ * but we may end up using
+ */
 public class PivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
     private final TalonFX intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
@@ -61,7 +64,7 @@ public class PivotSubsystem extends SubsystemBase {
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
         controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(20)).withMotionMagicAcceleration(10)
-        .withMotionMagicJerk(5);
+                .withMotionMagicJerk(5);
         // TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
@@ -70,10 +73,10 @@ public class PivotSubsystem extends SubsystemBase {
             this.joystick = joystick;
 
             slot0.kS = 0.0;
-            //slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
+            // slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
             slot0.kA = 0.2;
             slot0.kV = 0.2;
-            slot0.kP = 0.2;//1>>
+            slot0.kP = 0.2;// 1>>
             slot0.kI = 0.0;
             slot0.kD = 0.0;
 
@@ -81,14 +84,14 @@ public class PivotSubsystem extends SubsystemBase {
 
         } else {
             slot0.kS = 0.0;
-            //slot0.kG = 1.0;
+            // slot0.kG = 1.0;
             slot0.kA = 0.2;
             slot0.kV = 0.2;
             slot0.kP = 0.0;
             slot0.kI = 0.0;
             slot0.kD = 0.0;
 
-            ffeController = new ArmFeedforward(0, 0.27, 0.2);
+            ffeController = new ArmFeedforward(0, 0.27, .2,0.2);
 
             pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
 
@@ -130,11 +133,11 @@ public class PivotSubsystem extends SubsystemBase {
         });
     }
 
-    public Command intakeAlgae(){
-        return runEnd(()->{
+    public Command intakeAlgae() {
+        return runEnd(() -> {
             setIntake(INTAKE_ALGAE_SPEED);
             intakeSpeed = INTAKE_ALGAE_SPEED;
-        }, ()->{
+        }, () -> {
             setIntake(HOLD_ALGAE_SPEED);
             intakeSpeed = HOLD_ALGAE_SPEED;
         });
@@ -149,20 +152,19 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    public boolean isNearGoal(){
+    public boolean isNearGoal() {
         return MathUtil.isNear(pivot.setpoint, pivot.getEncoder(), 5);
     }
 
-
-    public boolean hasAlgae(){
-        if(RobotBase.isSimulation()){
+    public boolean hasAlgae() {
+        if (RobotBase.isSimulation()) {
             return joystick.button(2).getAsBoolean();
         } else {
-            return intakeMotor.getTorqueCurrent().getValueAsDouble() > 20;//TODO change w testing
+            return intakeMotor.getTorqueCurrent().getValueAsDouble() > 20;// TODO change w testing
         }
     }
 
-    public double getFfe(){
+    public double getFfe() {
         return ffeController.calculate(pivot.getEncoder(), pivotMotor.getVelocity().getValueAsDouble());
     }
 
@@ -171,12 +173,12 @@ public class PivotSubsystem extends SubsystemBase {
         pivot.updateSim();
     }
 
-
     @Override
     public void periodic() {
-        // pivot.updateDashboard(); //TODO add back in - potential fix for periodic overruns
-        // pivot.updateMotorControl(getFfe());
+        pivot.updateDashboard(); // TODO add back in - potential fix for periodic overruns
+        pivot.updateMotorControl(getFfe());
 
-        // SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());//TODO add back in - potential fix for periodic overruns
+        SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());// TODO add back in - potential fix for periodic
+                                                                        // overruns
     }
 }

@@ -9,25 +9,30 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team3602.robot.subsystems.Climb.ClimberSubsystem;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
 import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 
 public class Simulation extends SubsystemBase {
     private ElevSubsystem elevSubsys;
     private PivotSubsystem pivotSubsys;
+    private ClimberSubsystem climbSubsys;
 
     // Colors
     private final Color8Bit red = new Color8Bit(Color.kFirstRed);
     private final Color8Bit green = new Color8Bit(Color.kGreen);
     private final Color8Bit blue = new Color8Bit(Color.kSkyBlue);
     private final Color8Bit orange = new Color8Bit(Color.kPapayaWhip);
+    private final Color8Bit Navajo = new Color8Bit(Color.kNavajoWhite);
 
     private final Mech elevMech = new Mech("Elevator", 1.5, 1.5);
     private final Mech pivotMech = new Mech("Pivot", 1.5, 1.5);
+    private final Mech climbMech = new Mech("ClimbMech", 1, 1);
 
-    private final FlywheelSim intakeSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getKrakenX60(1),0.003, 5), DCMotor.getKrakenX60(1));
+    private final FlywheelSim intakeSim = new FlywheelSim(
+            LinearSystemId.createFlywheelSystem(DCMotor.getKrakenX60(1), 0.003, 5), DCMotor.getKrakenX60(1));
 
-    public Simulation(ElevSubsystem elevSubsys, PivotSubsystem pivotSubsys){
+    public Simulation(ElevSubsystem elevSubsys, PivotSubsystem pivotSubsys, ClimberSubsystem climbSubsys) {
         this.elevSubsys = elevSubsys;
         this.pivotSubsys = pivotSubsys;
 
@@ -38,31 +43,36 @@ public class Simulation extends SubsystemBase {
 
         pivotMech.addViz3("Sensor", 0, 0, 1.5, 0, 30, red);
 
+        climbMech.addViz5("Climb", 0, 0, 1, 0, 0, Navajo);
+
         SmartDashboard.putData("Elev Mech", elevMech.get());
         SmartDashboard.putData("Pivot Mech", pivotMech.get());
+        SmartDashboard.putData("Climb Mech",climbMech.get());
     }
 
     @Override
-    public void simulationPeriodic(){
+    public void simulationPeriodic() {
         intakeSim.setInput(pivotSubsys.intakeSpeed * 12);
         intakeSim.update(0.001);
 
         elevMech.viz.setLength(elevSubsys.elevSim.getPositionMeters());
 
-        pivotMech.viz.setAngle(pivotSubsys.pivot.getEncoder(), new Rotation3d(0,pivotSubsys.pivot.getEncoder(), 0));
-        
-        pivotMech.viz2.setAngle(pivotMech.viz2.getAngle() + (intakeSim.getAngularVelocityRPM() * 0.06), new Rotation3d(0, pivotMech.viz2.getAngle(), 0));
-        pivotMech.viz2.setRoot((Math.cos(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75,
-        (Math.sin(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75);
+        pivotMech.viz.setAngle(pivotSubsys.pivot.getEncoder(), new Rotation3d(0, pivotSubsys.pivot.getEncoder(), 0));
 
-        if(pivotSubsys.sensorIsTriggered()){
+        pivotMech.viz2.setAngle(pivotMech.viz2.getAngle() + (intakeSim.getAngularVelocityRPM() * 0.06),
+                new Rotation3d(0, pivotMech.viz2.getAngle(), 0));
+        pivotMech.viz2.setRoot((Math.cos(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75,
+                (Math.sin(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75);
+
+        climbMech.viz.setAngle(climbSubsys.pivot.getEncoder(), new Rotation3d(0, climbSubsys.pivot.getEncoder(), 0));
+        if (pivotSubsys.sensorIsTriggered()) {
             pivotMech.viz3.setColor(green);
-        } else{
+        } else {
             pivotMech.viz3.setColor(red);
         }
 
         elevMech.viz.updatePublisher();
         pivotMech.viz.updatePublisher();
         pivotMech.viz2.updatePublisher();
-    } 
+    }
 }

@@ -16,21 +16,22 @@ public class Mech {
     public Viz viz2;
     public Viz viz3;
     public Viz viz4;
-  
+    public Viz viz5;
+
     private String name;
-  
+
     public Mech(String subsystemName, double mechWidth, double mechHeight) {
         mech = new Mechanism2d(mechWidth, mechHeight);
         this.name = subsystemName;
     }
 
-    public Mechanism2d get(){
+    public Mechanism2d get() {
         return mech;
     }
 
     public void addViz(String vizName, double rootX, double rootY, double ligLength, double ligAngle,
             double ligLineWidth, Color8Bit ligColor) {
-         viz = new Viz(vizName, rootX, rootY, ligLength, ligAngle, ligLineWidth, ligColor);
+        viz = new Viz(vizName, rootX, rootY, ligLength, ligAngle, ligLineWidth, ligColor);
     }
 
     public void addViz2(String vizName, double rootX, double rootY, double ligLength, double ligAngle,
@@ -48,20 +49,27 @@ public class Mech {
         viz4 = new Viz(vizName, rootX, rootY, ligLength, ligAngle, ligLineWidth, ligColor);
     }
 
+    public void addViz5(String vizName, double rootX, double rootY, double ligLength, double ligAngle,
+            double ligLineWidth, Color8Bit ligColor) {
+        viz4 = new Viz(vizName, rootX, rootY, ligLength, ligAngle, ligLineWidth, ligColor);
+    }
+
     public class Viz {
         private MechanismRoot2d root;
         private MechanismLigament2d ligament;
 
         private StructPublisher<Pose3d> publisher;
 
-        private Pose3d currentPublisherPose = new Pose3d(0,0,0, new Rotation3d(0,0,0));
+        private Pose3d currentPublisherPose = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
 
         public Viz(String vizName, double rootX, double rootY, double ligLength, double ligAngle, double ligLineWidth,
                 Color8Bit ligColor) {
             root = mech.getRoot(name + " " + vizName + " Root", rootX, rootY);
-            ligament = root.append(new MechanismLigament2d(name + " " + vizName + " Viz", ligLength, ligAngle, ligLineWidth,
-                    ligColor));
-            publisher = NetworkTableInstance.getDefault().getStructTopic(name + " " + vizName + " Publisher", Pose3d.struct)
+            ligament = root
+                    .append(new MechanismLigament2d(name + " " + vizName + " Viz", ligLength, ligAngle, ligLineWidth,
+                            ligColor));
+            publisher = NetworkTableInstance.getDefault()
+                    .getStructTopic(name + " " + vizName + " Publisher", Pose3d.struct)
                     .publish();
         }
 
@@ -69,7 +77,7 @@ public class Mech {
             return ligament;
         }
 
-        public double getAngle(){
+        public double getAngle() {
             return ligament.getAngle();
         }
 
@@ -79,12 +87,12 @@ public class Mech {
 
         public void setLength(double length) {
             ligament.setLength(length);
-            currentPublisherPose.transformBy(new Transform3d(0,0,length, new Rotation3d(0,0,0)));
+            currentPublisherPose.transformBy(new Transform3d(0, 0, length, new Rotation3d(0, 0, 0)));
         }
 
-        public void setAngle(double angle, Rotation3d rotation) {
+        public void setAngle(double angle, Rotation3d rotation3d) {
             ligament.setAngle(angle);
-            currentPublisherPose.transformBy(new Transform3d(0,0,0, rotation));
+            currentPublisherPose.transformBy(new Transform3d(0, 0, 0, rotation3d));
         }
 
         public void setRoot(double x, double y) {
@@ -92,13 +100,14 @@ public class Mech {
             currentPublisherPose.transformBy(new Transform3d(x, 0, y, new Rotation3d()));
         }
 
-        /**Should be called periodically to keep publisher pose updated */
-        public void updatePublisher(){
+        /** Should be called periodically to keep publisher pose updated */
+        public void updatePublisher() {
             publisher.set(currentPublisherPose);
         }
 
-        public void setPublisherPose(Pose3d pose){
+        public void setPublisherPose(Pose3d pose) {
             publisher.set(pose);
         }
+
     }
 }

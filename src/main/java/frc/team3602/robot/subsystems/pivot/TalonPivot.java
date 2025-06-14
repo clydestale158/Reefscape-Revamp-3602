@@ -10,7 +10,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**Weird utility type class that I dont really like but we might end up using */
+/**
+ * Weird utility type class that I dont really like but we might end up using
+ */
 public class TalonPivot {
     private final String pivotName;
     private final TalonFX motor;
@@ -22,7 +24,7 @@ public class TalonPivot {
     private final TalonFXConfiguration configs;
     private final MotionMagicVoltage controller;
 
-    public TalonPivot(String name, TalonFX motor, SingleJointedArmSim pivotSim, TalonFXConfiguration configs){
+    public TalonPivot(String name, TalonFX motor, SingleJointedArmSim pivotSim, TalonFXConfiguration configs) {
         this.pivotName = name;
         this.motor = motor;
         this.pivotSim = pivotSim;
@@ -41,7 +43,10 @@ public class TalonPivot {
         }
     }
 
-     /**method that returns the motor rotor position (or degrees of the sim in a simulation) */
+    /**
+     * method that returns the motor rotor position (or degrees of the sim in a
+     * simulation)
+     */
     public double getEncoder() {
         if (Utils.isSimulation()) {
             return Units.radiansToDegrees(pivotSim.getAngleRads());
@@ -49,6 +54,8 @@ public class TalonPivot {
             return motor.getRotorPosition().getValueAsDouble();
         }
     }
+
+    public boolean runMotor = true;
 
     /**
      * call to set motors voltages to the parameter. Useful for typical PID/ffe or
@@ -63,22 +70,22 @@ public class TalonPivot {
         setpoint = newAngle;
     }
 
-
     /**
      * call (preferably periodically) to set the control of the motors using motion
      * magic
      */
     public void updateMotorControl(double ffe) {
-        motor.setControl(controller.withPosition(setpoint - getEncoder()).withSlot(0).withFeedForward(ffe));
+        // motor.setControl(controller.withPosition(setpoint -
+        // getEncoder()).withSlot(0).withFeedForward(ffe));
     }
 
-    /**Updates the elevator sim input */
+    /** Updates the elevator sim input */
     public void updateSim() {
         pivotSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 4);
         pivotSim.update(0.001);
     }
 
-    /**Puts some helpful numbers to Smartdashboard */
+    /** Puts some helpful numbers to Smartdashboard */
     public void updateDashboard() {
         SmartDashboard.putNumber(pivotName + " encoder", getEncoder());
         SmartDashboard.putNumber(pivotName + " setpoint", setpoint);

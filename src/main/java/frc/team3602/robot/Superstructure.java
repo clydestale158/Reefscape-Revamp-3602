@@ -3,6 +3,7 @@ package frc.team3602.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.team3602.robot.subsystems.Climb.ClimberSubsystem;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
 import frc.team3602.robot.subsystems.elevator.WeirdElevSubsystem;
@@ -20,6 +21,7 @@ public class Superstructure {
     private final DrivetrainSubsystem driveSubsys;
     private final PivotSubsystem pivotSubsys;
     private final ElevSubsystem elevSubsys;
+    //private ClimberSubsystem climberSubsys;
 
     private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
