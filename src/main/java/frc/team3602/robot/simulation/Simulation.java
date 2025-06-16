@@ -16,7 +16,6 @@ import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 public class Simulation extends SubsystemBase {
     private ElevSubsystem elevSubsys;
     private PivotSubsystem pivotSubsys;
-    private ClimberSubsystem climbSubsys;
 
     // Colors
     private final Color8Bit red = new Color8Bit(Color.kFirstRed);
@@ -27,12 +26,11 @@ public class Simulation extends SubsystemBase {
 
     private final Mech elevMech = new Mech("Elevator", 1.5, 1.5);
     private final Mech pivotMech = new Mech("Pivot", 1.5, 1.5);
-    private final Mech climbMech = new Mech("ClimbMech", 1, 1);
 
     private final FlywheelSim intakeSim = new FlywheelSim(
             LinearSystemId.createFlywheelSystem(DCMotor.getKrakenX60(1), 0.003, 5), DCMotor.getKrakenX60(1));
 
-    public Simulation(ElevSubsystem elevSubsys, PivotSubsystem pivotSubsys, ClimberSubsystem climbSubsys) {
+    public Simulation(ElevSubsystem elevSubsys, PivotSubsystem pivotSubsys) {
         this.elevSubsys = elevSubsys;
         this.pivotSubsys = pivotSubsys;
 
@@ -43,11 +41,8 @@ public class Simulation extends SubsystemBase {
 
         pivotMech.addViz3("Sensor", 0, 0, 1.5, 0, 30, red);
 
-        climbMech.addViz5("Climb", 0, 0, 1, 0, 0, Navajo);
-
         SmartDashboard.putData("Elev Mech", elevMech.get());
         SmartDashboard.putData("Pivot Mech", pivotMech.get());
-        SmartDashboard.putData("Climb Mech",climbMech.get());
     }
 
     @Override
@@ -64,7 +59,6 @@ public class Simulation extends SubsystemBase {
         pivotMech.viz2.setRoot((Math.cos(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75,
                 (Math.sin(Units.degreesToRadians(pivotMech.viz.getAngle())) * 0.56) + 0.75);
 
-        climbMech.viz.setAngle(climbSubsys.pivot.getEncoder(), new Rotation3d(0, climbSubsys.pivot.getEncoder(), 0));
         if (pivotSubsys.sensorIsTriggered()) {
             pivotMech.viz3.setColor(green);
         } else {

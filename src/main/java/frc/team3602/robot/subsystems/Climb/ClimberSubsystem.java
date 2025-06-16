@@ -8,8 +8,7 @@ package frc.team3602.robot.subsystems.Climb;
 
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static frc.team3602.robot.Constants.HardwareConstants.CLIMB_CURRENT_LIMIT;
-import static frc.team3602.robot.Constants.HardwareConstants.CLIMB_GEARING;
+
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -35,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.team3602.robot.Constants.ClimberConstants;
 import frc.team3602.robot.Constants.PivotConstants;
 import frc.team3602.robot.subsystems.pivot.TalonPivot;
 
@@ -43,7 +41,7 @@ import frc.team3602.robot.subsystems.pivot.TalonPivot;
 public class ClimberSubsystem extends SubsystemBase {
 
     // Motor ID
-    private final TalonFX motor = new TalonFX(ClimberConstants.motorCANId);
+    private TalonFX motor;// = new TalonFX(ClimberConstants.motorCANId);
 
     // PID controllers
     private PIDController climbController;
@@ -73,7 +71,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     // Climb sim
     public TalonPivot pivot;
-    public final SingleJointedArmSim climbSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), CLIMB_GEARING,
+    public final SingleJointedArmSim climbSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), 0,
             SingleJointedArmSim.estimateMOI(1, 1), 1, Units.degreesToRadians(1), Units.degreesToRadians(2), true,
             Units.degreesToRadians(3));
 
@@ -85,7 +83,7 @@ public class ClimberSubsystem extends SubsystemBase {
         outputCfg.NeutralMode = NeutralModeValue.Brake;
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
-        limitCfg.StatorCurrentLimit = CLIMB_CURRENT_LIMIT;
+        limitCfg.StatorCurrentLimit = 0;
 
         if (Utils.isSimulation()) {
             // climbMotorConfig = new TalonFXConfiguration();

@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team3602.robot.simulation.Simulation;
-import frc.team3602.robot.subsystems.Climb.ClimberSubsystem;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.drive.generated.TunerConstants;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
@@ -39,10 +38,9 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final DrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
-    private ElevSubsystem elevSubsystem = new ElevSubsystem();
+    private final ElevSubsystem elevSubsystem = new ElevSubsystem();
     private PivotSubsystem pivotSubsystem;// = new PivotSubsystem(joystick);
-    private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-    private Superstructure superstructure = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
+    private Superstructure superstructure;// = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
     private Simulation simulation;
 
     public SendableChooser<Command> autoChooser;
@@ -61,30 +59,24 @@ public class RobotContainer {
             joystick = new CommandJoystick(0);
             joystick2 = new CommandJoystick(1);
             pivotSubsystem = new PivotSubsystem(joystick);
-          //  climberSubsystem = new ClimberSubsystem(joystick2);
             superstructure = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
-            simulation = new Simulation(elevSubsystem, pivotSubsystem, climberSubsystem);
+            simulation = new Simulation(elevSubsystem, pivotSubsystem);
             configSimButtonBindings();
 
         } else {
             xbox = new CommandXboxController(0);
             xbox2 = new CommandXboxController(1);
-           pivotSubsystem = new PivotSubsystem(joystick);
-           // climberSubsystem = new ClimberSubsystem(joystick2);
+            pivotSubsystem = new PivotSubsystem(joystick);
             superstructure = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
 
             configButtonBindings();
         }
 
-        
-
-        // TODO add second pivot constructor for sim/real life
 
         configDefaultCommands();
         configNamedCommands();
         drivetrain.configAutoBuilder();
-        autoChooser = drivetrain.autoChooser;
-
+        configSendableChoosers();
     }
 
     private void configDefaultCommands() {
@@ -102,8 +94,8 @@ public class RobotContainer {
     }
 
     private void configSimButtonBindings() {
-        joystick.button(5).onTrue(pivotSubsystem.setAngle(-80));
-        joystick.button(6).onTrue(pivotSubsystem.setAngle(0));
+        joystick.button(1).onTrue(pivotSubsystem.setAngle(-80));
+        joystick.button(2).onTrue(pivotSubsystem.setAngle(0));
         joystick.button(3).onTrue(pivotSubsystem.setAngle(110));
         joystick.button(4).whileTrue(pivotSubsystem.runIntake(1));
 
@@ -112,13 +104,10 @@ public class RobotContainer {
         // joystick.button(3).onTrue(superstructure.scoreCoralL3());
         // joystick.button(4).onTrue(superstructure.scoreCoralL4());
 
-        joystick2.button(5).onTrue(elevSubsystem.setHeight(0.05));
-        joystick2.button(6).onTrue(elevSubsystem.setHeight(0.5));
+        joystick2.button(1).onTrue(elevSubsystem.setHeight(0.05));
+        joystick2.button(2).onTrue(elevSubsystem.setHeight(0.5));
         joystick2.button(3).onTrue(elevSubsystem.setHeight(1.0));
         joystick2.button(4).onTrue(elevSubsystem.setHeight(1.5));
-
-        joystick2.button(11).onTrue(climberSubsystem.setAngle(1));
-
     }
 
     private void configButtonBindings() {
@@ -149,7 +138,7 @@ public class RobotContainer {
         xbox.x().onTrue(elevSubsystem.setHeight(ELEV_L3));
         xbox.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
 
-
+        //TODO write auto align button bindings(burgle from 10505)
 
     }
 
@@ -166,7 +155,16 @@ public class RobotContainer {
         NamedCommands.registerCommand("Score Coral", superstructure.autoScoreCoral());
         NamedCommands.registerCommand("Score Coral L4", superstructure.autoScoreCoralL4());
 
-        // NamedCommands.registerCommand("Climb", superstructure.);
+        //TODO add more commands
+    }
+
+    private void configSendableChoosers(){
+        autoChooser = drivetrain.autoChooser;
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        polarityChooser.setDefaultOption("Positive", 1.0);
+        polarityChooser.addOption("Negative", -1.0);
+        SmartDashboard.putData("Polarity", polarityChooser);
     }
 
 }

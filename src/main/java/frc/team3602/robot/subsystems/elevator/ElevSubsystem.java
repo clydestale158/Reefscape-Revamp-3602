@@ -55,7 +55,7 @@ public class ElevSubsystem extends SubsystemBase {
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;
         outputCfg.NeutralMode = NeutralModeValue.Brake;
-        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;
+        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;//TODO maybe change??
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = ELEV_CURRENT_LIMIT;
@@ -113,7 +113,7 @@ public class ElevSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Elevator follower set voltage",
                 followerMotor.getMotorVoltage().getValueAsDouble());
-                
+
         //updating motor voltage
         motor.setVoltage(getEffort());
     }
