@@ -75,8 +75,9 @@ public class TalonPivot {
      * magic
      */
     public void updateMotorControl(double ffe) {
-        // motor.setControl(controller.withPosition(setpoint -
-        // getEncoder()).withSlot(0).withFeedForward(ffe));
+        motor.setControl(controller.withPosition(
+            setpoint - getEncoder()
+        ).withSlot(0).withFeedForward(ffe));
     }
 
     /** Updates the elevator sim input */

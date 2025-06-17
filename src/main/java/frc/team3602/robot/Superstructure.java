@@ -3,7 +3,6 @@ package frc.team3602.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.team3602.robot.subsystems.Climb.ClimberSubsystem;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
 import frc.team3602.robot.subsystems.elevator.WeirdElevSubsystem;

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -36,10 +35,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe take out, OR use to our advantage
+    //Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe add back in?
     CommandScheduler.getInstance().run();
 
-    Threads.setCurrentThreadPriority(false, 10);
+    //Threads.setCurrentThreadPriority(false, 10);
   }
 
   @Override
@@ -62,7 +61,6 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-
   }
 
   @Override

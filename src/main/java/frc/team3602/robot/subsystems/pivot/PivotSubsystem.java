@@ -63,8 +63,8 @@ public class PivotSubsystem extends SubsystemBase {
         feedbackCfg.SensorToMechanismRatio = PIVOT_GEARING;
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
-        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(20)).withMotionMagicAcceleration(10)
-                .withMotionMagicJerk(5);
+        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(20)).withMotionMagicAcceleration(40)
+                .withMotionMagicJerk(10);
         // TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
@@ -74,13 +74,13 @@ public class PivotSubsystem extends SubsystemBase {
 
             slot0.kS = 0.0;
             // slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
-            slot0.kA = 0.2;
-            slot0.kV = 0.2;
-            slot0.kP = 0.2;// 1>>
+            slot0.kA = 0.0;
+            slot0.kV = 0.0;
+            slot0.kP = 0.0002;// 1>>
             slot0.kI = 0.0;
             slot0.kD = 0.0;
 
-            ffeController = new ArmFeedforward(0.1, 0.062, 0.2);
+            ffeController = new ArmFeedforward(0, 0.26, 0.2);//.27< .25<
 
         } else {
             slot0.kS = 0.0;
@@ -165,7 +165,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getFfe() {
-        return ffeController.calculate(pivot.getEncoder(), pivotMotor.getVelocity().getValueAsDouble());
+        return ffeController.calculate(Units.degreesToRadians(pivot.getEncoder()), pivotMotor.getVelocity().getValueAsDouble());
     }
 
     @Override
@@ -175,10 +175,9 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        pivot.updateDashboard(); // TODO add back in - potential fix for periodic overruns
+        pivot.updateDashboard(); // TODO take out if necessary - potential fix for periodic overruns
         pivot.updateMotorControl(getFfe());
 
-        SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());// TODO add back in - potential fix for periodic
-                                                                        // overruns
+        SmartDashboard.putBoolean("Intake sensor", sensorIsTriggered());
     }
 }

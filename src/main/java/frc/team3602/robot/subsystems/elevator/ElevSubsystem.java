@@ -33,7 +33,7 @@ public class ElevSubsystem extends SubsystemBase {
     private ElevatorFeedforward ffeController;
 
     //Setpoints
-    public final double startingHeight = 0;
+    public final double startingHeight = 1;//TODO IRL - change back to 0
     private double setpoint = startingHeight;
 
     //Elev sim
@@ -43,8 +43,8 @@ public class ElevSubsystem extends SubsystemBase {
     /**Constructor */
     public ElevSubsystem() {
         if (RobotBase.isSimulation()) {
-            controller = new PIDController(0, 0, 0);//todo tune eventually
-            ffeController = new ElevatorFeedforward(0, 0.5, 0);
+            controller = new PIDController(1.0, 0, 0);//todo tune eventually
+            ffeController = new ElevatorFeedforward(0, 0.0001, 0);
         } else {
             controller = new PIDController(0.5, 0, 0.01);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
             ffeController = new ElevatorFeedforward(0.06, 0.25, 0.1, 0.1);
@@ -88,8 +88,8 @@ public class ElevSubsystem extends SubsystemBase {
 
     /**returns the combined calculated effort of our ffe and pid controllers*/
     private double getEffort(){
-        return ffeController.calculate(motor.getVelocity().getValueAsDouble(), motor.getAcceleration().getValueAsDouble()) + //TODO debate velocity and acceleration things. it is new therefore scary (Usually it is 0)
-        controller.calculate(getEncoder(), setpoint);
+        return ffeController.calculate(motor.getVelocity().getValueAsDouble(), motor.getAcceleration().getValueAsDouble())// + //TODO debate velocity and acceleration things. it is new therefore scary (Usually it is 0)
+        + controller.calculate(getEncoder(), setpoint);
     }
 
     /**returns true if the elev encoder and setpoint are within 1.5 units of each other */
@@ -100,7 +100,7 @@ public class ElevSubsystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         //update the elev sim
-        elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 16);//16 is a jank random number. can be changed
+        elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 28);
         elevSim.update(0.01);
     }
 
@@ -111,6 +111,8 @@ public class ElevSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator setpoint", setpoint);
         SmartDashboard.putNumber("Elevator velocity", motor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator acceleration", motor.getAcceleration().getValueAsDouble());
+
         SmartDashboard.putNumber("Elevator follower set voltage",
                 followerMotor.getMotorVoltage().getValueAsDouble());
 

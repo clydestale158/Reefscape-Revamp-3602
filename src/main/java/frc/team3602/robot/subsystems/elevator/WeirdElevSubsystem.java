@@ -23,17 +23,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/**Weird subsystem that NO LONGER uses the weird utility type class that i dont like */
+/**Weird subsystem that NO LONGER uses the weird utility type class that i didnt like */
 //AKA its just a subsys that uses motion magic
 public class WeirdElevSubsystem extends SubsystemBase{
     private final TalonFX leadMotor = new TalonFX(ELEV_LEAD_MOTOR_ID);
     private final TalonFX followerMotor = new TalonFX(ELEV_FOLLOW_MOTOR_ID);
-    
-    //private TalonElevator elevator;
-
 
     public final double startingHeight = 0.6;
     private double setpoint = startingHeight;
+    
     private final MotionMagicVoltage controller = new MotionMagicVoltage(setpoint);
 
     public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 8, 0.5, -0.01, Units.inchesToMeters(72), true, startingHeight);
