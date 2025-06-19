@@ -101,7 +101,7 @@ public class ElevSubsystem extends SubsystemBase {
     public void simulationPeriodic() {
         //update the elev sim
         elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 28);
-        elevSim.update(0.01);
+        elevSim.update(0.001);//changed fr
     }
 
     @Override

@@ -63,8 +63,8 @@ public class PivotSubsystem extends SubsystemBase {
         feedbackCfg.SensorToMechanismRatio = PIVOT_GEARING;
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
-        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(20)).withMotionMagicAcceleration(40)
-                .withMotionMagicJerk(10);
+        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(30)).withMotionMagicAcceleration(120)
+                .withMotionMagicJerk(5);
         // TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
@@ -74,11 +74,11 @@ public class PivotSubsystem extends SubsystemBase {
 
             slot0.kS = 0.0;
             // slot0.kG = 0.062;//.59<//PRE VOLTAGE MULTIPLICATION -> 0.235;//.24> && .23<
-            slot0.kA = 0.0;
-            slot0.kV = 0.0;
-            slot0.kP = 0.0002;// 1>>
+            slot0.kA = 0.03;
+            slot0.kV = 0.03;
+            slot0.kP = 0.02;//
             slot0.kI = 0.0;
-            slot0.kD = 0.0;
+            slot0.kD = 0.01;
 
             ffeController = new ArmFeedforward(0, 0.26, 0.2);//.27< .25<
 
