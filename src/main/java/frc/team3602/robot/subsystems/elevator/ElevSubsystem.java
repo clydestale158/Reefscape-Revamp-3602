@@ -37,7 +37,7 @@ public class ElevSubsystem extends SubsystemBase {
     private double setpoint = startingHeight;
 
     //Elev sim
-    public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 4,
+    public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 3,
             Units.inchesToMeters(1), -0.1, 3, true, startingHeight);
 
     /**Constructor */
@@ -46,8 +46,8 @@ public class ElevSubsystem extends SubsystemBase {
             controller = new PIDController(1.0, 0, 0);//todo tune eventually
             ffeController = new ElevatorFeedforward(0, 0.0001, 0);
         } else {
-            controller = new PIDController(0.5, 0, 0.01);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
-            ffeController = new ElevatorFeedforward(0.06, 0.25, 0.1, 0.1);
+            controller = new PIDController(0.09, 0, 0.0001);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
+            ffeController = new ElevatorFeedforward(0.8, 0.27, 0.9, 0.1);
         }
 
         //configurations
