@@ -3,6 +3,7 @@ package frc.team3602.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
 import static frc.team3602.robot.Constants.ElevConstants.*;
+import static frc.team3602.robot.Constants.PivotConstants.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -133,11 +134,17 @@ public class RobotContainer {
                             .withRotationalRate(0.0))
                             .until(() -> !drivetrain.seesLeftSensor()));
 
-        xbox.a().onTrue(elevSubsystem.setHeight(ELEV_DOWN));
-        xbox.b().onTrue(elevSubsystem.setHeight(ELEV_L2));
-        xbox.x().onTrue(elevSubsystem.setHeight(ELEV_L3));
-        xbox.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
+        // xbox.a().onTrue(elevSubsystem.setHeight(ELEV_DOWN));
+        // xbox.b().onTrue(elevSubsystem.setHeight(ELEV_L2));
+        // xbox.x().onTrue(elevSubsystem.setHeight(ELEV_L3));
+        // xbox.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
 
+
+        xbox.a().onTrue(pivotSubsystem.setAngle(-20));
+        xbox.b().onTrue(pivotSubsystem.setAngle(0));
+        xbox.x().onTrue(pivotSubsystem.setAngle(30));
+        xbox.y().onTrue(pivotSubsystem.setAngle(80));
+        
         //TODO write auto align button bindings(burgle from 10505)
 
     }

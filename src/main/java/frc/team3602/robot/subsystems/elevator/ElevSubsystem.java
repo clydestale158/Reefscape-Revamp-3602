@@ -33,7 +33,7 @@ public class ElevSubsystem extends SubsystemBase {
     private ElevatorFeedforward ffeController;
 
     //Setpoints
-    public final double startingHeight = 1;//TODO IRL - change back to 0
+    public final double startingHeight = 0;//TODO IRL - change back to 0
     private double setpoint = startingHeight;
 
     //Elev sim
@@ -88,7 +88,7 @@ public class ElevSubsystem extends SubsystemBase {
 
     /**returns the combined calculated effort of our ffe and pid controllers*/
     private double getEffort(){
-        return ffeController.calculate(motor.getVelocity().getValueAsDouble(), motor.getAcceleration().getValueAsDouble())// + //TODO debate velocity and acceleration things. it is new therefore scary (Usually it is 0)
+        return ffeController.calculate(0)//motor.getVelocity().getValueAsDouble(), motor.getAcceleration().getValueAsDouble())// + //TODO debate velocity and acceleration things. it is new therefore scary (Usually it is 0)
         + controller.calculate(getEncoder(), setpoint);
     }
 
@@ -101,7 +101,7 @@ public class ElevSubsystem extends SubsystemBase {
     public void simulationPeriodic() {
         //update the elev sim
         elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 28);
-        elevSim.update(0.001);//changed fr
+        elevSim.update(0.001);
     }
 
     @Override

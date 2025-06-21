@@ -40,7 +40,7 @@ public class PivotSubsystem extends SubsystemBase {
     private CANcoder pivotEncoder;
 
     private CommandJoystick joystick;
-    public final double startingAngle = 30;
+    public final double startingAngle = 0;
     public double intakeSpeed;// ONLY USED FOR LOGGING AND SIM
 
     private ArmFeedforward ffeController;
@@ -63,8 +63,8 @@ public class PivotSubsystem extends SubsystemBase {
         feedbackCfg.SensorToMechanismRatio = PIVOT_GEARING;
 
         MotionMagicConfigs controllerCfg = cfg.MotionMagic;
-        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(30)).withMotionMagicAcceleration(120)
-                .withMotionMagicJerk(5);
+        controllerCfg.withMotionMagicCruiseVelocity(RotationsPerSecond.of(5)).withMotionMagicAcceleration(30)
+                .withMotionMagicJerk(4);
         // TODO up with testing irl
 
         Slot0Configs slot0 = cfg.Slot0;
@@ -84,14 +84,13 @@ public class PivotSubsystem extends SubsystemBase {
 
         } else {
             slot0.kS = 0.0;
-            // slot0.kG = 1.0;
-            slot0.kA = 0.2;
-            slot0.kV = 0.2;
-            slot0.kP = 0.0;
+            slot0.kA = 0.06;
+            slot0.kV = 0.04;
+            slot0.kP = 0.05;
             slot0.kI = 0.0;
             slot0.kD = 0.0;
 
-            ffeController = new ArmFeedforward(0, 0.27, .2,0.2);
+            ffeController = new ArmFeedforward(0, 0.27, 0);//.27
 
             pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
 

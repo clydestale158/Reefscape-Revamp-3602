@@ -4,11 +4,14 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import static frc.team3602.robot.Constants.HardwareConstants.*;
+
 
 /**
  * Weird utility type class that I dont really like but we might end up using
@@ -23,6 +26,11 @@ public class TalonPivot {
 
     private final TalonFXConfiguration configs;
     private final MotionMagicVoltage controller;
+
+    private final CANcoder pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
+
+    private double absoluteOffset = 0.0;
+    private double pivotGearRatio = 12.0 / 1.0;
 
     public TalonPivot(String name, TalonFX motor, SingleJointedArmSim pivotSim, TalonFXConfiguration configs) {
         this.pivotName = name;
@@ -51,7 +59,7 @@ public class TalonPivot {
         if (Utils.isSimulation()) {
             return Units.radiansToDegrees(pivotSim.getAngleRads());
         } else {
-            return motor.getRotorPosition().getValueAsDouble();
+            return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 140; //210//150// absoluteOffset
         }
     }
 
@@ -92,5 +100,8 @@ public class TalonPivot {
         SmartDashboard.putNumber(pivotName + " setpoint", setpoint);
 
         SmartDashboard.putNumber(pivotName + " set voltage", motor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber(pivotName + " velocity", motor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber(pivotName + " acceleration", motor.getAcceleration().getValueAsDouble());
+
     }
 }
