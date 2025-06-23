@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
  * Weird subsystem that works w the utility type class that I don't really like,
  * but we may end up using
  */
-public class PivotSubsystem extends SubsystemBase {
+public class WeirdPivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
     private final TalonFX intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
 
@@ -50,7 +50,7 @@ public class PivotSubsystem extends SubsystemBase {
             SingleJointedArmSim.estimateMOI(0.2, 7), 0.2, Units.degreesToRadians(-120), Units.degreesToRadians(140),
             true, Units.degreesToRadians(startingAngle));
 
-    public PivotSubsystem(CommandJoystick joystick) {
+    public WeirdPivotSubsystem(CommandJoystick joystick) {
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;

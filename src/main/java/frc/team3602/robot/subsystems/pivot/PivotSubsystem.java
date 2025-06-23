@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 /**typical pivot subsystem. kind of a mess yet */
-public class PivotSubsys extends SubsystemBase {
+public class PivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
     private final TalonFX intakeMotor = new TalonFX(INTAKE_MOTOR_ID);
 
@@ -49,7 +49,7 @@ public class PivotSubsys extends SubsystemBase {
             estimateMOI(0.3, 1), 0.3, -3, 3, true, startingAngle);
 
     /** Simulation Constructor */
-    public PivotSubsys(CommandJoystick joystick) {
+    public PivotSubsystem(CommandJoystick joystick) {
         if (RobotBase.isSimulation()) {
             this.joystick = joystick;
 
@@ -79,7 +79,7 @@ public class PivotSubsys extends SubsystemBase {
     }
 
     /** IRL Constructor, NOT for sim */
-    public PivotSubsys() {
+    public PivotSubsystem() {
         // no sim stuff here
 
         pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
