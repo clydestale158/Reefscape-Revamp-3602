@@ -150,17 +150,27 @@ public class RobotContainer {
     }
 
     private void configNamedCommands() {
+        NamedCommands.registerCommand("elevDown", elevSubsystem.setHeight(ELEV_DOWN));
+        NamedCommands.registerCommand("prepElevL4", superstructure.setElevator(ELEV_L4));
+        NamedCommands.registerCommand("prepElevL3", superstructure.setElevator(ELEV_L3));
+        NamedCommands.registerCommand("prepElevL2", superstructure.setElevator(ELEV_L2));
+        NamedCommands.registerCommand("prepElevL1", superstructure.setElevator(ELEV_L1));
+        NamedCommands.registerCommand("prepElevCoralIntake", superstructure.setElevator(ELEV_DOWN));
+        NamedCommands.registerCommand("down", superstructure.down());
+        NamedCommands.registerCommand("prepPivotL4", superstructure.setPivot(SCORE_CORAL_L4_ANGLE));
+        NamedCommands.registerCommand("prepPivotReef", superstructure.setPivot(SCORE_CORAL_ANGLE));
+        NamedCommands.registerCommand("prepPivotCoralIntake", superstructure.setPivot(INTAKE_CORAL_ANGLE));
+        NamedCommands.registerCommand("prepPivotAlgae", superstructure.setPivot(INTAKE_ALGAE_ANGLE));
+    
+        NamedCommands.registerCommand("shoot", superstructure.outtakeCoral());
+        NamedCommands.registerCommand("intake", superstructure.intakeCoral());
+        
+        NamedCommands.registerCommand("grabAlgaeHigh", superstructure.intakeAlgaeL3());
+        NamedCommands.registerCommand("grabAlgaeLow", superstructure.intakeAlgaeL2());
+        NamedCommands.registerCommand("holdAlgae", superstructure.holdAlgae());
+
+        
         NamedCommands.registerCommand("Test", print("Auton test"));
-        NamedCommands.registerCommand("Intake Coral", superstructure.intakeCoral());
-        NamedCommands.registerCommand("Outtake Coral", superstructure.outtakeCoral());
-
-        NamedCommands.registerCommand("Set Elevator Down", superstructure.setElevator(ELEV_DOWN));
-        NamedCommands.registerCommand("Set Elevator L2", superstructure.setElevator(ELEV_L2));
-        NamedCommands.registerCommand("Set Elevator L3", superstructure.setElevator(ELEV_L3));
-        NamedCommands.registerCommand("Set Elevator L4", superstructure.setElevator(ELEV_L4));
-
-        NamedCommands.registerCommand("Score Coral", superstructure.autoScoreCoral());
-        NamedCommands.registerCommand("Score Coral L4", superstructure.autoScoreCoralL4());
 
         //TODO add more commands
     }

@@ -36,13 +36,29 @@ public class Superstructure {
 
     /** command that runs the pivot intake until the sensor is triggered, compatable with auton */
     public Command intakeCoral() {
-        return pivotSubsys.runIntake(INTAKE_SPEED).until(() -> pivotSubsys.sensorIsTriggered());
+        return pivotSubsys.runIntake(INTAKE_CORAL_SPEED).until(() -> pivotSubsys.sensorIsTriggered());
     }
 
     /** command that runs the pivot intake until the !sensor is triggered, compatable with auton */
     public Command outtakeCoral() {
-        return pivotSubsys.runIntake(SCORE_SPEED).until(() -> !pivotSubsys.sensorIsTriggered());
+        return pivotSubsys.runIntake(SCORE_CORAL_SPEED).until(() -> !pivotSubsys.sensorIsTriggered());
     }
+
+    /**Command that runs the pivot intake in reverse for 1 second */
+    public Command gripCoral(){
+        return pivotSubsys.setIntake(-0.5).withTimeout(1.0);
+    }
+
+    /**Command sequence, NOT compatable with auton */
+    public Command getCoral(){
+        return sequence(
+            setElevator(ELEV_DOWN),
+            setPivot(INTAKE_CORAL_ANGLE),
+            intakeCoral(),
+            gripCoral()
+        );
+    }
+
 
     /**Command sequence to stow the pivot(and wait until isNearGoal), compatable with auton */
     public Command setPivot(double angle) {
@@ -65,7 +81,7 @@ public class Superstructure {
     /**Command sequence, ONLY compatable with AUTON!! */
     public Command autoScoreCoral() {
         return sequence(
-                pivotSubsys.setAngle(SCORE_ANGLE),
+                pivotSubsys.setAngle(SCORE_CORAL_ANGLE),
                 outtakeCoral(),
                 driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0))).withTimeout(0.5));
     }
@@ -73,7 +89,7 @@ public class Superstructure {
     /**Command sequence, ONLY compatable with AUTON!! */
     public Command autoScoreCoralL4(){
         return sequence(
-            setPivot(SCORE_L4_ANGLE),
+            setPivot(SCORE_CORAL_L4_ANGLE),
             outtakeCoral(),
             elevSubsys.setHeight(ELEV_L4_BUMP),
             none().until(()-> elevSubsys.isNearGoal()),
@@ -85,7 +101,7 @@ public class Superstructure {
     public Command scoreCoralL2() {
         return sequence(
                 setElevator(ELEV_L2),
-                setPivot(SCORE_ANGLE),
+                setPivot(SCORE_CORAL_ANGLE),
                 outtakeCoral(),
                 driveSubsys.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).withTimeout(0.5),
                 setElevator(ELEV_DOWN));
@@ -95,7 +111,7 @@ public class Superstructure {
     public Command scoreCoralL3() {
         return sequence(
                 setElevator(ELEV_L3),
-                setPivot(SCORE_ANGLE),
+                setPivot(SCORE_CORAL_ANGLE),
                 outtakeCoral(),
                 driveSubsys.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).withTimeout(0.5),
                 setElevator(ELEV_DOWN));
@@ -105,7 +121,7 @@ public class Superstructure {
     public Command scoreCoralL4(){
         return sequence(
             setElevator(ELEV_L4),
-            setPivot(SCORE_L4_ANGLE),
+            setPivot(SCORE_CORAL_L4_ANGLE),
             outtakeCoral(),
             elevSubsys.setHeight(ELEV_L4_BUMP),
             none().until(()-> elevSubsys.isNearGoal()),
@@ -130,6 +146,13 @@ public class Superstructure {
         );
     }
 
+    public Command holdAlgae(){
+        return sequence(
+            pivotSubsys.setIntake(HOLD_ALGAE_SPEED),
+            elevSubsys.setHeight(ELEV_DOWN)
+        );
+    }
+
     public Command autoAlignLeft() {
         return Commands.sequence(
                 driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, 0.6, 0.0)))
@@ -141,6 +164,24 @@ public class Superstructure {
         return Commands.sequence(
                 driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, -0.75, 0.0)))
                         .until(() -> !driveSubsys.seesRightSensor())
+        );
+    }
+
+    public Command down() {
+        return Commands.sequence(
+            sequence(
+                elevSubsys.setHeight(ELEV_L3),
+                waitUntil(elevSubsys::isNearGoal)
+            ).unless(()-> elevSubsys.getEncoder() < 28.0),
+
+            pivotSubsys.setAngle(STOW_ANGLE),
+            waitUntil(pivotSubsys::isNearGoal),
+
+            elevSubsys.setHeight(0.1),
+
+            pivotSubsys.setAngle(INTAKE_CORAL_ANGLE),
+            waitUntil(pivotSubsys::isNearGoal),
+            pivotSubsys.runIntake(0.1).until(pivotSubsys::sensorIsTriggered)
         );
     }
 }

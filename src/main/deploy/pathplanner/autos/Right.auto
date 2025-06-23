@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left to c6"
+            "pathName": "s6 to c2"
           }
         },
         {
@@ -35,6 +35,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.4
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "prepElevCoralIntake"
@@ -47,9 +53,15 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "c6-left station"
+            "pathName": "c2-right station"
           }
         },
         {
@@ -61,7 +73,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "left Station-c4"
+            "pathName": "right station to c3"
           }
         },
         {

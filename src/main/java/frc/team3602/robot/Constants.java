@@ -29,18 +29,18 @@ public class Constants {
 
     public class PivotConstants {
         // intake speeds
-        public final static double INTAKE_SPEED = 0.5;// TODO check/fix irl
-        public final static double SCORE_SPEED = 0.5;// TODO check/fix irl
+        public final static double INTAKE_CORAL_SPEED = 0.5;// TODO check/fix irl
+        public final static double SCORE_CORAL_SPEED = 0.5;// TODO check/fix irl
         public final static double INTAKE_ALGAE_SPEED = 0.5;// TODO check/fix irl
         public final static double HOLD_ALGAE_SPEED = 0.5;// TODO check/fix irl
 
         // pivot angles
-        public final static double INTAKE_ANGLE = 110;// TODO check/fix irl
+        public final static double INTAKE_CORAL_ANGLE = 110;// TODO check/fix irl
         public final static double STOW_ANGLE = 80;// TODO check/fix irl
         public final static double INTAKE_ALGAE_ANGLE = 110;// TODO check/fix irl
 
-        public final static double SCORE_ANGLE = 80;// TODO check/fix irl
-        public final static double SCORE_L4_ANGLE = 70;// TODO check/fix irl
+        public final static double SCORE_CORAL_ANGLE = 80;// TODO check/fix irl
+        public final static double SCORE_CORAL_L4_ANGLE = 70;// TODO check/fix irl
     }
 
     public class ElevConstants {
@@ -48,7 +48,7 @@ public class Constants {
         public final static double ELEV_L1 = 2;
         public final static double ELEV_L2 = 6.5;
         public final static double ELEV_L3 = 16;
-        public final static double ELEV_L4 = 33;
+        public final static double ELEV_L4 = 31;
         public final static double ELEV_L4_BUMP = 21;// TODO check/fix irl
 
         public final static double ELEV_L2_ALGAE = 13;
