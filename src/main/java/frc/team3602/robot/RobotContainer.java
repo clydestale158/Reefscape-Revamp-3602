@@ -38,6 +38,7 @@ public class RobotContainer {
     private final SwerveRequest.RobotCentric teleopDrive = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+
     private final DrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
     private final ElevSubsystem elevSubsystem = new ElevSubsystem();
     private PivotSubsystem pivotSubsystem;// = new PivotSubsystem(joystick);
@@ -46,8 +47,6 @@ public class RobotContainer {
 
     public SendableChooser<Command> autoChooser;
     private final SendableChooser<Double> polarityChooser = new SendableChooser<>();
-    
-
 
     public RobotContainer() {
 
@@ -73,11 +72,11 @@ public class RobotContainer {
             configButtonBindings();
         }
 
-
         configDefaultCommands();
         configNamedCommands();
         drivetrain.configAutoBuilder();
         configSendableChoosers();
+
     }
 
     private void configDefaultCommands() {
@@ -117,35 +116,80 @@ public class RobotContainer {
         // xbox.x().onTrue(superstructure.scoreCoralL3());
         // xbox.y().onTrue(superstructure.scoreCoralL4());
 
-         xbox.povDown().onTrue(superstructure.intakeCoral());
-         xbox.povUp().onTrue(superstructure.outtakeCoral());
+        // xbox.povDown().onTrue(superstructure.intakeCoral());
+        // xbox.povUp().onTrue(superstructure.outtakeCoral());
+        xbox.leftTrigger()
+                .whileTrue(drivetrain.applyRequest(() -> drive
+                        .withVelocityX(-xbox.getLeftY()
+                                * polarityChooser.getSelected()
+                                * 0.3 * MaxSpeed) // Drive
+                        .withVelocityY(-xbox.getLeftX()
+                                * polarityChooser.getSelected() *
+                                0.3 * MaxSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(
+                                -xbox.getRightX() * 0.7 * MaxAngularRate)));
+        xbox.rightTrigger()
+                .whileTrue(drivetrain.applyRequest(() -> drive
+                        .withVelocityX(-xbox.getLeftY()
+                                * polarityChooser.getSelected()
+                                * 1.2 * MaxSpeed) // Drive
+                        .withVelocityY(-xbox.getLeftX()
+                                * polarityChooser.getSelected() *
+                                1.2 * MaxSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(
+                                -xbox.getRightX() * 3.2 * MaxAngularRate)));
 
         xbox.povRight().whileTrue(
-            // rumblyRightAlign()
-            drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
-                            .withVelocityY(-0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
-                            .withRotationalRate(0.0))
-                            .until(() -> !drivetrain.seesRightSensor()));
+                // rumblyRightAlign()
+                drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
+                        .withVelocityY(-0.6)// 75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
+                        .withRotationalRate(0.0))
+                        .until(() -> !drivetrain.seesRightSensor()));
 
-                            xbox.povRight().whileTrue(
-            // rumblyRightAlign()
-            drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
-                            .withVelocityY(0.6)//75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
-                            .withRotationalRate(0.0))
-                            .until(() -> !drivetrain.seesLeftSensor()));
+        xbox.povLeft().whileTrue(
+                // rumblyRightAlign()
+                drivetrain.applyRequest(() -> drive.withVelocityX(0.0)
+                        .withVelocityY(0.6)// 75)// * rightAutoAlignSpeedMULTIPLIER.getSelected())
+                        .withRotationalRate(0.0))
+                        .until(() -> !drivetrain.seesLeftSensor()));
 
+        xbox.povUp().whileTrue(
+                drivetrain.applyRequest(() -> teleopDrive.withVelocityX(-0.4)
+                        .withVelocityY(0.0)
+                        .withRotationalRate(0.0)));
+
+        xbox.povDown().whileTrue(
+                drivetrain.applyRequest(() -> teleopDrive.withVelocityX(0.4)
+                        .withVelocityY(0.0)
+                        .withRotationalRate(0.0)));
         // xbox.a().onTrue(elevSubsystem.setHeight(ELEV_DOWN));
         // xbox.b().onTrue(elevSubsystem.setHeight(ELEV_L2));
         // xbox.x().onTrue(elevSubsystem.setHeight(ELEV_L3));
         // xbox.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
 
-
         xbox.a().onTrue(pivotSubsystem.setAngle(-20));
         xbox.b().onTrue(pivotSubsystem.setAngle(0));
         xbox.x().onTrue(pivotSubsystem.setAngle(30));
         xbox.y().onTrue(pivotSubsystem.setAngle(80));
-        
-        //TODO write auto align button bindings(burgle from 10505)
+
+
+
+        // operator bindings (Burgled from 10505)
+        //TODO make them legitly match up
+        xbox2.povUp().onTrue(superstructure.scoreCoralL4());
+        xbox2.povDown().onTrue(superstructure.intakeCoral());// .onFalse(coralSubsys.stop());
+        //xbox2.povLeft().whileTrue(superstructure.());
+        xbox2.povRight().whileTrue(superstructure.outputCoralTrough());
+
+        xbox2.a().onTrue(elevSubsystem.setHeight(ELEV_L2));
+        xbox2.b().onTrue(elevSubsystem.setHeight(ELEV_L3));
+        xbox2.x().onTrue(elevSubsystem.setHeight(ELEV_DOWN));//TODO contemplate what to do about l1
+        xbox2.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
+        xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
+
+        xbox2.rightTrigger().onTrue(superstructure.bombsAway());
+        xbox2.leftBumper().onTrue(superstructure.detonate());
+        xbox2.leftTrigger().onTrue(superstructure.takeCover());
 
     }
 
@@ -161,21 +205,20 @@ public class RobotContainer {
         NamedCommands.registerCommand("prepPivotReef", superstructure.setPivot(SCORE_CORAL_ANGLE));
         NamedCommands.registerCommand("prepPivotCoralIntake", superstructure.setPivot(INTAKE_CORAL_ANGLE));
         NamedCommands.registerCommand("prepPivotAlgae", superstructure.setPivot(INTAKE_ALGAE_ANGLE));
-    
+
         NamedCommands.registerCommand("shoot", superstructure.outtakeCoral());
         NamedCommands.registerCommand("intake", superstructure.intakeCoral());
-        
+
         NamedCommands.registerCommand("grabAlgaeHigh", superstructure.intakeAlgaeL3());
         NamedCommands.registerCommand("grabAlgaeLow", superstructure.intakeAlgaeL2());
         NamedCommands.registerCommand("holdAlgae", superstructure.holdAlgae());
 
-        
         NamedCommands.registerCommand("Test", print("Auton test"));
 
-        //TODO add more commands
+        // TODO add more commands
     }
 
-    private void configSendableChoosers(){
+    private void configSendableChoosers() {
         autoChooser = drivetrain.autoChooser;
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
