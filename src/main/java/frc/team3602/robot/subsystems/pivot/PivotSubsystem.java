@@ -43,7 +43,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     public final double startingAngle = 30;
     private double setpoint;
-    public double intakeSpeed;
+    public double intakeSpeed = .5;
 
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), PIVOT_GEARING,
             estimateMOI(0.3, 1), 0.3, -3, 3, true, startingAngle);
@@ -53,8 +53,8 @@ public class PivotSubsystem extends SubsystemBase {
         if (RobotBase.isSimulation()) {
             this.joystick = joystick;
 
-            controller = new PIDController(0, 0, 0);
-            ffeController = new ArmFeedforward(0, 0.3, 0, 0);
+            controller = new PIDController(0.09, 0, 0.05);
+            ffeController = new ArmFeedforward(5.0, 0.25, 0.9, 0.1);
         } else {// but in case we are monkeys who use this constructor irl, we include this
             pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
 
@@ -63,8 +63,8 @@ public class PivotSubsystem extends SubsystemBase {
             magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 1;
             pivotEncoder.getConfigurator().apply(magnetSensorConfigs);
 
-            controller = new PIDController(0, 0, 0);
-            ffeController = new ArmFeedforward(0, 0.3, 0, 0);
+            controller = new PIDController(0.09, 0, 0.0001);
+            ffeController = new ArmFeedforward(0.8, 0.27, 0.9, 0.1);
 
             laser = new LaserCan(INTAKE_LASER_ID);
         }
@@ -89,8 +89,8 @@ public class PivotSubsystem extends SubsystemBase {
         magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 1;
         pivotEncoder.getConfigurator().apply(magnetSensorConfigs);
 
-        controller = new PIDController(0, 0, 0);
-        ffeController = new ArmFeedforward(0, 0.3, 0, 0);
+        controller = new PIDController(0.09, 0, 0.0001);
+        ffeController = new ArmFeedforward(0.8, 0.27, 0.9, 0.1);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
@@ -192,7 +192,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //pivotMotor.setVoltage(getEffort());
+        pivotMotor.setVoltage(getEffort());
         SmartDashboard.putNumber("Pivot encoder", getEncoder());
         SmartDashboard.putNumber("Pivot setpoint", setpoint);
 

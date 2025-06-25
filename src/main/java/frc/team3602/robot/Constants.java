@@ -31,8 +31,8 @@ public class Constants {
         // intake speeds
         public final static double INTAKE_CORAL_SPEED = 0.5;// TODO check/fix irl
         public final static double SCORE_CORAL_SPEED = 0.5;// TODO check/fix irl
-        public final static double INTAKE_ALGAE_SPEED = 0.5;// TODO check/fix irl
-        public final static double HOLD_ALGAE_SPEED = 0.5;// TODO check/fix irl
+        public final static double INTAKE_ALGAE_SPEED = -0.5;// TODO check/fix irl
+        public final static double HOLD_ALGAE_SPEED = 0.0;// TODO check/fix irl
 
         // pivot angles
         public final static double INTAKE_CORAL_ANGLE = 110;// TODO check/fix irl

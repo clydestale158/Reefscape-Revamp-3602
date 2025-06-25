@@ -188,7 +188,7 @@ public class RobotContainer {
         xbox2.b().onTrue(elevSubsystem.setHeight(ELEV_L3));
         xbox2.x().onTrue(elevSubsystem.setHeight(ELEV_DOWN));//TODO contemplate what to do about l1
         xbox2.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
-        xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
+        //xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
 
         // xbox2.rightTrigger().onTrue(superstructure.bombsAway());
         // xbox2.leftBumper().onTrue(superstructure.detonate());
