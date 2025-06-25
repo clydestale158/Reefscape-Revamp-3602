@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team3602.robot.simulation.Simulation;
@@ -111,13 +112,8 @@ public class RobotContainer {
     }
 
     private void configButtonBindings() {
-        // xbox.a().onTrue(superstructure.setElevator(ELEV_DOWN));
-        // xbox.b().onTrue(superstructure.scoreCoralL2());
-        // xbox.x().onTrue(superstructure.scoreCoralL3());
-        // xbox.y().onTrue(superstructure.scoreCoralL4());
-
-        // xbox.povDown().onTrue(superstructure.intakeCoral());
-        // xbox.povUp().onTrue(superstructure.outtakeCoral());
+  
+        //Driver controls
         xbox.leftTrigger()
                 .whileTrue(drivetrain.applyRequest(() -> drive
                         .withVelocityX(-xbox.getLeftY()
@@ -162,24 +158,31 @@ public class RobotContainer {
                 drivetrain.applyRequest(() -> teleopDrive.withVelocityX(0.4)
                         .withVelocityY(0.0)
                         .withRotationalRate(0.0)));
-        // xbox.a().onTrue(elevSubsystem.setHeight(ELEV_DOWN));
-        // xbox.b().onTrue(elevSubsystem.setHeight(ELEV_L2));
-        // xbox.x().onTrue(elevSubsystem.setHeight(ELEV_L3));
-        // xbox.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
+
+                        xbox.start().onTrue(resetGyro());
+                        xbox.back().onTrue(resetGyro180());
 
         xbox.a().onTrue(pivotSubsystem.setAngle(-20));
         xbox.b().onTrue(pivotSubsystem.setAngle(0));
         xbox.x().onTrue(pivotSubsystem.setAngle(30));
         xbox.y().onTrue(pivotSubsystem.setAngle(80));
 
+        //TODO integrate(Below bndings are burgled from 10505)
+        // xboxController.a().onTrue(algaeSubsys.setAngle(-18));
+        // xboxController.b().onTrue(algaeSubsys.intakeForwardSlowest()).onFalse(algaeSubsys.intakeStop());
+
+        // xboxController.x().onTrue(algaeSubsys.setAngle(-90));
+        // xboxController.y().onTrue(algaeSubsys.setAngle(10)); // 5
+
+
 
 
         // operator bindings (Burgled from 10505)
         //TODO make them legitly match up
         xbox2.povUp().onTrue(superstructure.scoreCoralL4());
-        xbox2.povDown().onTrue(superstructure.intakeCoral());// .onFalse(coralSubsys.stop());
-        //xbox2.povLeft().whileTrue(superstructure.());
-        xbox2.povRight().whileTrue(superstructure.outputCoralTrough());
+        xbox2.povDown().onTrue(superstructure.intakeCoral());
+        xbox2.povLeft().whileTrue(superstructure.scoreCoral());
+        xbox2.povRight().whileTrue(superstructure.intakeCoral());
 
         xbox2.a().onTrue(elevSubsystem.setHeight(ELEV_L2));
         xbox2.b().onTrue(elevSubsystem.setHeight(ELEV_L3));
@@ -187,9 +190,9 @@ public class RobotContainer {
         xbox2.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
         xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
 
-        xbox2.rightTrigger().onTrue(superstructure.bombsAway());
-        xbox2.leftBumper().onTrue(superstructure.detonate());
-        xbox2.leftTrigger().onTrue(superstructure.takeCover());
+        // xbox2.rightTrigger().onTrue(superstructure.bombsAway());
+        // xbox2.leftBumper().onTrue(superstructure.detonate());
+        // xbox2.leftTrigger().onTrue(superstructure.takeCover());
 
     }
 
@@ -226,5 +229,18 @@ public class RobotContainer {
         polarityChooser.addOption("Negative", -1.0);
         SmartDashboard.putData("Polarity", polarityChooser);
     }
+
+            private Command resetGyro() {
+                return Commands.runOnce(() -> {
+                        drivetrain.getPigeon2().reset();
+
+                });
+        }
+
+        private Command resetGyro180() {
+                return Commands.runOnce(() -> {
+                        drivetrain.getPigeon2().setYaw(180);
+                });
+        }
 
 }
