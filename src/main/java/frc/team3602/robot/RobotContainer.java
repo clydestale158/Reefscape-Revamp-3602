@@ -39,15 +39,34 @@ public class RobotContainer {
     private final SwerveRequest.RobotCentric teleopDrive = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-
     private final DrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
     private final ElevSubsystem elevSubsystem = new ElevSubsystem();
     private PivotSubsystem pivotSubsystem;// = new PivotSubsystem(joystick);
     private Superstructure superstructure;// = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
     private Simulation simulation;
 
+    private enum Driver {
+        Karter,
+        Cooper,
+        Walter,
+        Caroline,
+        David,
+        Riley,
+        Jaxson,
+        Laura,
+        Cece,
+        Abe_Perryham,
+        Kennedy,
+        Robert,
+        Mentor,
+        Other
+    }
+
     public SendableChooser<Command> autoChooser;
     private final SendableChooser<Double> polarityChooser = new SendableChooser<>();
+    private final SendableChooser<Driver> driverChooser = new SendableChooser<>();
+
+    private double driverSpeedMultiplier = 1;
 
     public RobotContainer() {
 
@@ -85,12 +104,12 @@ public class RobotContainer {
             drivetrain.setDefaultCommand(drivetrain.applyRequest(
                     () -> drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed * polarityChooser.getSelected())
                             .withVelocityY(joystick.getRawAxis(1) * MaxSpeed * polarityChooser.getSelected())
-                            .withRotationalRate(-joystick2.getRawAxis(0) * MaxAngularRate)));
+                            .withRotationalRate(-joystick2.getRawAxis(0) * MaxAngularRate * driverSpeedMultiplier)));
         } else {
             drivetrain.setDefaultCommand(drivetrain
                     .applyRequest(() -> drive.withVelocityX(-xbox.getLeftY() * MaxSpeed * polarityChooser.getSelected())
                             .withVelocityY(xbox.getLeftX() * MaxSpeed * polarityChooser.getSelected())
-                            .withRotationalRate(-xbox.getRightX() * MaxAngularRate)));
+                            .withRotationalRate(-xbox.getRightX() * MaxAngularRate * driverSpeedMultiplier)));
         }
     }
 
@@ -112,18 +131,18 @@ public class RobotContainer {
     }
 
     private void configButtonBindings() {
-  
-        //Driver controls
+
+        // Driver controls
         xbox.leftTrigger()
                 .whileTrue(drivetrain.applyRequest(() -> drive
                         .withVelocityX(-xbox.getLeftY()
                                 * polarityChooser.getSelected()
-                                * 0.3 * MaxSpeed) // Drive
+                                * 0.2 * MaxSpeed) // Drive
                         .withVelocityY(-xbox.getLeftX()
                                 * polarityChooser.getSelected() *
-                                0.3 * MaxSpeed) // Drive left with negative X (left)
+                                0.2 * MaxSpeed) // Drive left with negative X (left)
                         .withRotationalRate(
-                                -xbox.getRightX() * 0.7 * MaxAngularRate)));
+                                -xbox.getRightX() * 0.7 * MaxAngularRate * driverSpeedMultiplier)));
         xbox.rightTrigger()
                 .whileTrue(drivetrain.applyRequest(() -> drive
                         .withVelocityX(-xbox.getLeftY()
@@ -133,7 +152,7 @@ public class RobotContainer {
                                 * polarityChooser.getSelected() *
                                 1.2 * MaxSpeed) // Drive left with negative X (left)
                         .withRotationalRate(
-                                -xbox.getRightX() * 3.2 * MaxAngularRate)));
+                                -xbox.getRightX() * 3.2 * MaxAngularRate * driverSpeedMultiplier)));
 
         xbox.povRight().whileTrue(
                 // rumblyRightAlign()
@@ -159,36 +178,38 @@ public class RobotContainer {
                         .withVelocityY(0.0)
                         .withRotationalRate(0.0)));
 
-                        xbox.start().onTrue(resetGyro());
-                        xbox.back().onTrue(resetGyro180());
+        xbox.start().onTrue(resetGyro());
+        xbox.back().onTrue(resetGyro180());
 
-        xbox.a().onTrue(pivotSubsystem.setAngle(-20));
-        xbox.b().onTrue(pivotSubsystem.setAngle(0));
-        xbox.x().onTrue(pivotSubsystem.setAngle(30));
-        xbox.y().onTrue(pivotSubsystem.setAngle(80));
+        // xbox.a().onTrue(pivotSubsystem.setAngle(-20));
+        // xbox.b().onTrue(pivotSubsystem.setAngle(0));
+        // xbox.x().onTrue(pivotSubsystem.setAngle(30));
+        // xbox.y().onTrue(pivotSubsystem.setAngle(INTAKE_CORAL_ANGLE));
 
-        //TODO integrate(Below bndings are burgled from 10505)
+        xbox.a().onTrue(elevSubsystem.setHeight(0));
+        xbox.b().onTrue(elevSubsystem.setHeight(6.5));
+        xbox.x().onTrue(elevSubsystem.setHeight(25));
+        xbox.y().onTrue(elevSubsystem.setHeight(32));
+
+        // TODO integrate(Below bndings are burgled from 10505)
         // xboxController.a().onTrue(algaeSubsys.setAngle(-18));
         // xboxController.b().onTrue(algaeSubsys.intakeForwardSlowest()).onFalse(algaeSubsys.intakeStop());
 
         // xboxController.x().onTrue(algaeSubsys.setAngle(-90));
         // xboxController.y().onTrue(algaeSubsys.setAngle(10)); // 5
 
-
-
-
         // operator bindings (Burgled from 10505)
-        //TODO make them legitly match up
+        // TODO make them legitly match up
         xbox2.povUp().onTrue(superstructure.scoreCoralL4());
         xbox2.povDown().onTrue(superstructure.intakeCoral());
         xbox2.povLeft().whileTrue(superstructure.scoreCoral());
-        xbox2.povRight().whileTrue(superstructure.intakeCoral());
+        // xbox2.povRight().whileTrue(superstructure.intakeCoral());
 
         xbox2.a().onTrue(elevSubsystem.setHeight(ELEV_L2));
         xbox2.b().onTrue(elevSubsystem.setHeight(ELEV_L3));
-        xbox2.x().onTrue(elevSubsystem.setHeight(ELEV_DOWN));//TODO contemplate what to do about l1
+        xbox2.x().onTrue(elevSubsystem.setHeight(ELEV_DOWN));// TODO contemplate what to do about l1
         xbox2.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
-        //xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
+        // xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
 
         // xbox2.rightTrigger().onTrue(superstructure.bombsAway());
         // xbox2.leftBumper().onTrue(superstructure.detonate());
@@ -228,19 +249,50 @@ public class RobotContainer {
         polarityChooser.setDefaultOption("Positive", 1.0);
         polarityChooser.addOption("Negative", -1.0);
         SmartDashboard.putData("Polarity", polarityChooser);
+
+        driverChooser.setDefaultOption("None (autonomous craziness - DONT TRY)", Driver.Other);
+        driverChooser.addOption("Karter", Driver.Karter);
+        driverChooser.addOption("Cooper", Driver.Cooper);
+        driverChooser.addOption("Walter", Driver.Walter);
+        driverChooser.addOption("Caroline", Driver.Caroline);
+        driverChooser.addOption("David", Driver.David);
+        driverChooser.addOption("Riley", Driver.Riley);
+        driverChooser.addOption("Jaxson", Driver.Jaxson);
+        driverChooser.addOption("Laura", Driver.Laura);
+        driverChooser.addOption("Cece", Driver.Cece);
+        driverChooser.addOption("Abe Perryham", Driver.Abe_Perryham);
+        driverChooser.addOption("Kennedy", Driver.Kennedy);
+        driverChooser.addOption("Robert", Driver.Robert);
+        driverChooser.addOption("Mentor", Driver.Mentor);
+
     }
 
-            private Command resetGyro() {
-                return Commands.runOnce(() -> {
-                        drivetrain.getPigeon2().reset();
+    private Command resetGyro() {
+        return Commands.runOnce(() -> {
+            drivetrain.getPigeon2().reset();
 
-                });
+        });
+    }
+
+    private Command resetGyro180() {
+        return Commands.runOnce(() -> {
+            drivetrain.getPigeon2().setYaw(180);
+        });
+    }
+
+    /* NEEDS to be called periodically */
+    public void updateDriverMultiplier() {
+        if (driverChooser.getSelected() == Driver.Karter | driverChooser.getSelected() == Driver.Abe_Perryham) {
+            driverSpeedMultiplier = 1.2;
+        } else if (driverChooser.getSelected() == Driver.David) {
+            driverSpeedMultiplier = 0.3;
+        } else if (driverChooser.getSelected() == Driver.Robert | driverChooser.getSelected() == Driver.Kennedy |
+                driverChooser.getSelected() == Driver.Jaxson | driverChooser.getSelected() == Driver.Cece) {
+            driverSpeedMultiplier = 0.8;
+        } else {
+            driverSpeedMultiplier = 1;
         }
 
-        private Command resetGyro180() {
-                return Commands.runOnce(() -> {
-                        drivetrain.getPigeon2().setYaw(180);
-                });
-        }
+    }
 
 }

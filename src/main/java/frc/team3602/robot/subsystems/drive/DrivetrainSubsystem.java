@@ -249,6 +249,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Gyro rot", getPigeon2().getYaw().getValueAsDouble());
     /*
      * Periodically try to apply the operator perspective.
      * If we haven't applied the operator perspective before, then we should apply

@@ -12,14 +12,13 @@ public class Constants {
 
         public final static int INTAKE_LASER_ID = 31;
 
-        public final static int DRIVE_LEFT_LASER_ID = 55;
-        public final static int DRIVE_RIGHT_LASER_ID = 54;
+        public final static int DRIVE_LEFT_LASER_ID = 54;
+        public final static int DRIVE_RIGHT_LASER_ID = 55;//ids might be wrong, but this is functional lol
 
         // gearing and current limits
         public final static double ELEV_GEARING = 12;
         public final static double ELEV_CURRENT_LIMIT = 35;
 
-       //TODO: find actual Gearing for Climb and a proper Current Limit
         public final static double CLIMB_GEARING = 6;
         public final static double CLIMB_CURRENT_LIMIT = 30;
 

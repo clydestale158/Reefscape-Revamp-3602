@@ -46,7 +46,7 @@ public class ElevSubsystem extends SubsystemBase {
             controller = new PIDController(1.0, 0, 0);//todo tune eventually
             ffeController = new ElevatorFeedforward(0, 0.0001, 0);
         } else {
-            controller = new PIDController(0.09, 0, 0.0001);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
+            controller = new PIDController(0.37, 0, 0.1);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
             ffeController = new ElevatorFeedforward(0.8, 0.27, 0.9, 0.1);
         }
 
@@ -82,7 +82,7 @@ public class ElevSubsystem extends SubsystemBase {
         if (Utils.isSimulation()) {
             return elevSim.getPositionMeters();
         } else {
-            return motor.getRotorPosition().getValueAsDouble();
+            return motor.getRotorPosition().getValueAsDouble() *(Math.PI * 2.15)/12;
         }
     }
 
@@ -109,12 +109,12 @@ public class ElevSubsystem extends SubsystemBase {
         //updating dashboard
         SmartDashboard.putNumber("Elevator encoder", getEncoder());
         SmartDashboard.putNumber("Elevator setpoint", setpoint);
-        SmartDashboard.putNumber("Elevator velocity", motor.getVelocity().getValueAsDouble());
+        //SmartDashboard.putNumber("Elevator velocity", motor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Elevator acceleration", motor.getAcceleration().getValueAsDouble());
+        //SmartDashboard.putNumber("Elevator acceleration", motor.getAcceleration().getValueAsDouble());
 
-        SmartDashboard.putNumber("Elevator follower set voltage",
-                followerMotor.getMotorVoltage().getValueAsDouble());
+        //SmartDashboard.putNumber("Elevator follower set voltage",
+                //followerMotor.getMotorVoltage().getValueAsDouble());
 
         //updating motor voltage
         motor.setVoltage(getEffort());
