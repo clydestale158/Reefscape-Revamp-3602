@@ -33,7 +33,7 @@ public class ElevSubsystem extends SubsystemBase {
     private ElevatorFeedforward ffeController;
 
     // Setpoints
-    public final double startingHeight = 0;// TODO IRL - change back to 0
+    public final double startingHeight = 0;
     private double setpoint = startingHeight;
 
     // Elev sim
@@ -46,8 +46,7 @@ public class ElevSubsystem extends SubsystemBase {
             controller = new PIDController(1.0, 0, 0);// todo tune eventually
             ffeController = new ElevatorFeedforward(0, 0.0001, 0);
         } else {
-            controller = new PIDController(0.37, 0, 0.1);// $kp = .5 //TODO finish tuning. Was tested before tensioning
-                                                         // the elevator, and was janky
+            controller = new PIDController(0.37, 0, 0.1);// 
             ffeController = new ElevatorFeedforward(0.8, 0.27, 0.9, 0.1);
         }
 
@@ -56,7 +55,7 @@ public class ElevSubsystem extends SubsystemBase {
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;
         outputCfg.NeutralMode = NeutralModeValue.Brake;
-        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;// TODO maybe change??
+        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = ELEV_CURRENT_LIMIT;
@@ -89,9 +88,7 @@ public class ElevSubsystem extends SubsystemBase {
 
     /** returns the combined calculated effort of our ffe and pid controllers */
     private double getEffort() {
-        return ffeController.calculate(0)// motor.getVelocity().getValueAsDouble(),
-                                         // motor.getAcceleration().getValueAsDouble())// + //TODO debate velocity and
-                                         // acceleration things. it is new therefore scary (Usually it is 0)
+        return ffeController.calculate(0)
                 + controller.calculate(getEncoder(), setpoint);
     }
 

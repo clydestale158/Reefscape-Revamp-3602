@@ -114,11 +114,11 @@ public class Superstructure {
     /** command sequence. ONLY compatable with TELEOP!! */
     public Command scoreCoralL4() {
         return sequence(
-                setElevator(1),//ELEV_L4),//TODO change back after sim testing
+                setElevator(ELEV_L4),
                 setPivot(SCORE_CORAL_L4_ANGLE),
                 
                 outtakeCoral(),
-                elevSubsys.setHeight(1.2),//ELEV_L4_BUMP),//TODO change back after sim testing
+                elevSubsys.setHeight(ELEV_L4_BUMP),
                 waitUntil(() -> elevSubsys.isNearGoal()),
                 driveSubsys.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).withTimeout(0.3),
                 setElevator(ELEV_DOWN));

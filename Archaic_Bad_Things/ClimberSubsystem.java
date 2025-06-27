@@ -4,7 +4,7 @@
  * in the root directory of this project.
  */
 
-package frc.team3602.robot.subsystems.Climb;
+//package frc.team3602.robot.Climb;
 
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
@@ -37,8 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team3602.robot.Constants.PivotConstants;
 import frc.team3602.robot.subsystems.pivot.TalonPivot;
 
-// TODO: Write Simulation?
-public class ClimberSubsystem extends SubsystemBase {
+public class ClimberSubsystem {
 
 
     
@@ -50,7 +49,7 @@ public class ClimberSubsystem extends SubsystemBase {
          public final static double ATTACH_ANGLE = 110;
          public final static double CLIMBING_ANGLE = 110;
     }
-    
+
     // Motor ID
     private TalonFX motor;// = new TalonFX(ClimberConstants.motorCANId);
 
@@ -62,12 +61,12 @@ public class ClimberSubsystem extends SubsystemBase {
     public double setClimbAngle = 0.0;
 
     // // Variables
-    public final static double INTAKE_ANGLE = 110;// TODO check/fix irl
-    public final static double STOW_ANGLE = 80;// TODO check/fix irl
-    public final static double INTAKE_ALGAE_ANGLE = 110;// TODO check/fix irl
+    public final static double INTAKE_ANGLE = 110;
+    public final static double STOW_ANGLE = 80;
+    public final static double INTAKE_ALGAE_ANGLE = 110;
 
-    public final static double SCORE_ANGLE = 80;// TODO check/fix irl
-    public final static double SCORE_L4_ANGLE = 70;// TODO check/fix irl
+    public final static double SCORE_ANGLE = 80;
+    public final static double SCORE_L4_ANGLE = 70;
 
     // // Encoder
     // private double climberEncoder = 0.0;
@@ -113,7 +112,6 @@ public class ClimberSubsystem extends SubsystemBase {
     // SingleJointedArmSim.estimateMOI(ClimberConstants.lengthMeters,
     // ClimberConstants.massKG),
     // ClimberConstants.lengthMeters, -12, 1, true, 0);
-    // // TODO: Find approriate travel distance in Rads, and learn what -12 means.
     // public double climberVislength;
     // public Mechanism2d climberSimMech = new Mechanism2d(1, 1);
     // public MechanismRoot2d climberRoot;

@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe take out if proven uselessS
+    Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe take out if proven useless
     CommandScheduler.getInstance().run();
     robotContainer.preventTipping();
 

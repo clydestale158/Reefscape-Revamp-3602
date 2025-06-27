@@ -21,7 +21,6 @@ public class Simulation extends SubsystemBase {
     private final Color8Bit green = new Color8Bit(Color.kGreen);
     private final Color8Bit blue = new Color8Bit(Color.kSkyBlue);
     private final Color8Bit orange = new Color8Bit(Color.kPapayaWhip);
-    private final Color8Bit Navajo = new Color8Bit(Color.kNavajoWhite);
 
     private final Mech elevMech = new Mech("Elevator", 1.5, 1.5);
     private final Mech pivotMech = new Mech("Pivot", 1.5, 1.5);

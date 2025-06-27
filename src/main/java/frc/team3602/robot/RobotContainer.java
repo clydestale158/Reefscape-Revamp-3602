@@ -43,6 +43,7 @@ public class RobotContainer {
     private final ElevSubsystem elevSubsystem = new ElevSubsystem();
     private PivotSubsystem pivotSubsystem;// = new PivotSubsystem(joystick);
     private Superstructure superstructure;// = new Superstructure(drivetrain, pivotSubsystem, elevSubsystem);
+    @SuppressWarnings("unused")
     private Simulation simulation;
 
     private enum Driver {
