@@ -40,6 +40,17 @@ import frc.team3602.robot.subsystems.pivot.TalonPivot;
 // TODO: Write Simulation?
 public class ClimberSubsystem extends SubsystemBase {
 
+
+    
+    public final class ClimberConstants {
+        public static final int motorCANId = 18;
+        public static final double percentVoltageScalar = 0.4; // 0.2
+
+         // Climb angles
+         public final static double ATTACH_ANGLE = 110;
+         public final static double CLIMBING_ANGLE = 110;
+    }
+    
     // Motor ID
     private TalonFX motor;// = new TalonFX(ClimberConstants.motorCANId);
 

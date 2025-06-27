@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team3602.robot.simulation.Simulation;
+import frc.team3602.robot.subsystems.ElevSubsystem;
+import frc.team3602.robot.subsystems.PivotSubsystem;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team3602.robot.subsystems.drive.generated.TunerConstants;
-import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
-import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 
 public class RobotContainer {
     private CommandJoystick joystick;
@@ -114,20 +114,27 @@ public class RobotContainer {
     }
 
     private void configSimButtonBindings() {
-        joystick.button(1).onTrue(pivotSubsystem.setAngle(-80));
-        joystick.button(2).onTrue(pivotSubsystem.setAngle(0));
-        joystick.button(3).onTrue(pivotSubsystem.setAngle(110));
-        joystick.button(4).whileTrue(pivotSubsystem.runIntake(1));
+        // joystick.button(1).onTrue(pivotSubsystem.setAngle(-80));
+        // joystick.button(2).onTrue(pivotSubsystem.setAngle(0));
+        // joystick.button(3).onTrue(pivotSubsystem.setAngle(110));
+        // joystick.button(4).whileTrue(pivotSubsystem.runIntake(1));
+
+        //joystick.button(1).onTrue(superstructure.);
+        joystick.button(2).onTrue(superstructure.scoreCoral());
+        joystick.button(3).onTrue(superstructure.scoreCoralL4());
+        //joystick.button(4).whileTrue(pivotSubsystem.runIntake(1));
 
         // joystick.button(1).onTrue(superstructure.setElevator(ELEV_DOWN));
         // joystick.button(2).onTrue(superstructure.scoreCoralL2());
         // joystick.button(3).onTrue(superstructure.scoreCoralL3());
         // joystick.button(4).onTrue(superstructure.scoreCoralL4());
 
-        joystick2.button(1).onTrue(elevSubsystem.setHeight(0.05));
-        joystick2.button(2).onTrue(elevSubsystem.setHeight(0.5));
-        joystick2.button(3).onTrue(elevSubsystem.setHeight(1.0));
-        joystick2.button(4).onTrue(elevSubsystem.setHeight(1.5));
+        joystick2.button(1).onTrue(superstructure.setElevator(0.05));
+        joystick2.button(2).onTrue(superstructure.setElevator(0.5));
+        joystick2.button(3).onTrue(superstructure.setElevator(1.0));
+        joystick2.button(4).onTrue(superstructure.setElevator(1.5));
+
+
     }
 
     private void configButtonBindings() {
@@ -181,15 +188,15 @@ public class RobotContainer {
         xbox.start().onTrue(resetGyro());
         xbox.back().onTrue(resetGyro180());
 
-        // xbox.a().onTrue(pivotSubsystem.setAngle(-20));
-        // xbox.b().onTrue(pivotSubsystem.setAngle(0));
-        // xbox.x().onTrue(pivotSubsystem.setAngle(30));
-        // xbox.y().onTrue(pivotSubsystem.setAngle(INTAKE_CORAL_ANGLE));
+        xbox.a().onTrue(pivotSubsystem.setAngle(-20));
+        xbox.b().onTrue(pivotSubsystem.setAngle(0));
+        xbox.x().onTrue(pivotSubsystem.setAngle(30));
+        xbox.y().onTrue(pivotSubsystem.setAngle(INTAKE_CORAL_ANGLE));
 
-        xbox.a().onTrue(elevSubsystem.setHeight(0));
-        xbox.b().onTrue(elevSubsystem.setHeight(6.5));
-        xbox.x().onTrue(elevSubsystem.setHeight(25));
-        xbox.y().onTrue(elevSubsystem.setHeight(32));
+        // xbox.a().onTrue(superstructure.setElevator(0));
+        // xbox.b().onTrue(superstructure.setElevator(6.5));
+        // xbox.x().onTrue(superstructure.setElevator(25));
+        // xbox.y().onTrue(superstructure.setElevator(32));
 
         // TODO integrate(Below bndings are burgled from 10505)
         // xboxController.a().onTrue(algaeSubsys.setAngle(-18));
@@ -205,10 +212,10 @@ public class RobotContainer {
         xbox2.povLeft().whileTrue(superstructure.scoreCoral());
         // xbox2.povRight().whileTrue(superstructure.intakeCoral());
 
-        xbox2.a().onTrue(elevSubsystem.setHeight(ELEV_L2));
-        xbox2.b().onTrue(elevSubsystem.setHeight(ELEV_L3));
-        xbox2.x().onTrue(elevSubsystem.setHeight(ELEV_DOWN));// TODO contemplate what to do about l1
-        xbox2.y().onTrue(elevSubsystem.setHeight(ELEV_L4));
+        xbox2.a().onTrue(superstructure.setElevator(ELEV_L2));
+        xbox2.b().onTrue(superstructure.setElevator(ELEV_L3));
+        xbox2.x().onTrue(superstructure.setElevator(ELEV_DOWN));// TODO contemplate what to do about l1
+        xbox2.y().onTrue(superstructure.setElevator(ELEV_L4));
         // xbox2.rightBumper().onTrue(superstructure.manualL4Bump());
 
         // xbox2.rightTrigger().onTrue(superstructure.bombsAway());
@@ -218,7 +225,7 @@ public class RobotContainer {
     }
 
     private void configNamedCommands() {
-        NamedCommands.registerCommand("elevDown", elevSubsystem.setHeight(ELEV_DOWN));
+        NamedCommands.registerCommand("elevDown", superstructure.setElevator(ELEV_DOWN));
         NamedCommands.registerCommand("prepElevL4", superstructure.setElevator(ELEV_L4));
         NamedCommands.registerCommand("prepElevL3", superstructure.setElevator(ELEV_L3));
         NamedCommands.registerCommand("prepElevL2", superstructure.setElevator(ELEV_L2));
@@ -289,10 +296,18 @@ public class RobotContainer {
         } else if (driverChooser.getSelected() == Driver.Robert | driverChooser.getSelected() == Driver.Kennedy |
                 driverChooser.getSelected() == Driver.Jaxson | driverChooser.getSelected() == Driver.Cece) {
             driverSpeedMultiplier = 0.8;
+        } else if (driverChooser.getSelected() == Driver.Other) {
+            driverSpeedMultiplier = (Math.random()/2) + 0.7;
         } else {
             driverSpeedMultiplier = 1;
         }
+    }
 
+    /*NEEDS to be called periodically */
+    public void preventTipping(){
+        if(drivetrain.getPigeon2().getPitch().getValueAsDouble() > 30 | drivetrain.getPigeon2().getRoll().getValueAsDouble() > 30){
+            elevSubsystem.setHeight(ELEV_DOWN);
+        }
     }
 
 }

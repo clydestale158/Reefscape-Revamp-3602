@@ -1,4 +1,4 @@
-package frc.team3602.robot.subsystems.elevator;
+package frc.team3602.robot.subsystems;
 
 import static frc.team3602.robot.Constants.HardwareConstants.*;
 
@@ -24,51 +24,52 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** just an elevator subsystem that does NOT use motion magic. **USE THIS** */
 public class ElevSubsystem extends SubsystemBase {
-    //Motors
+    // Motors
     private final TalonFX motor = new TalonFX(ELEV_LEAD_MOTOR_ID);
     private final TalonFX followerMotor = new TalonFX(ELEV_FOLLOW_MOTOR_ID);
 
-    //Controllers
+    // Controllers
     private PIDController controller;
     private ElevatorFeedforward ffeController;
 
-    //Setpoints
-    public final double startingHeight = 0;//TODO IRL - change back to 0
+    // Setpoints
+    public final double startingHeight = 0;// TODO IRL - change back to 0
     private double setpoint = startingHeight;
 
-    //Elev sim
+    // Elev sim
     public final ElevatorSim elevSim = new ElevatorSim(DCMotor.getKrakenX60(2), ELEV_GEARING, 3,
             Units.inchesToMeters(1), -0.1, 3, true, startingHeight);
 
-    /**Constructor */
+    /** Constructor */
     public ElevSubsystem() {
         if (RobotBase.isSimulation()) {
-            controller = new PIDController(1.0, 0, 0);//todo tune eventually
+            controller = new PIDController(1.0, 0, 0);// todo tune eventually
             ffeController = new ElevatorFeedforward(0, 0.0001, 0);
         } else {
-            controller = new PIDController(0.37, 0, 0.1);//$kp = .5 //TODO finish tuning. Was tested before tensioning the elevator, and was janky
+            controller = new PIDController(0.37, 0, 0.1);// $kp = .5 //TODO finish tuning. Was tested before tensioning
+                                                         // the elevator, and was janky
             ffeController = new ElevatorFeedforward(0.8, 0.27, 0.9, 0.1);
         }
 
-        //configurations
+        // configurations
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
         MotorOutputConfigs outputCfg = cfg.MotorOutput;
         outputCfg.NeutralMode = NeutralModeValue.Brake;
-        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;//TODO maybe change??
+        outputCfg.Inverted = InvertedValue.CounterClockwise_Positive;// TODO maybe change??
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = ELEV_CURRENT_LIMIT;
 
-        //config application
+        // config application
         motor.getConfigurator().apply(cfg);
         followerMotor.getConfigurator().apply(cfg);
-        
-        //setting the control of the follower motor to be a follower of our lead motor
+
+        // setting the control of the follower motor to be a follower of our lead motor
         followerMotor.setControl(new Follower(ELEV_LEAD_MOTOR_ID, false));
     }
 
-    /**Run once command that changes the setpoint of the elevator */
+    /** Run once command that changes the setpoint of the elevator */
     public Command setHeight(double newHeight) {
         return runOnce(() -> {
             setpoint = newHeight;
@@ -82,41 +83,52 @@ public class ElevSubsystem extends SubsystemBase {
         if (Utils.isSimulation()) {
             return elevSim.getPositionMeters();
         } else {
-            return motor.getRotorPosition().getValueAsDouble() *(Math.PI * 2.15)/12;
+            return motor.getRotorPosition().getValueAsDouble() * (Math.PI * 2.15) / 12;
         }
     }
 
-    /**returns the combined calculated effort of our ffe and pid controllers*/
-    private double getEffort(){
-        return ffeController.calculate(0)//motor.getVelocity().getValueAsDouble(), motor.getAcceleration().getValueAsDouble())// + //TODO debate velocity and acceleration things. it is new therefore scary (Usually it is 0)
-        + controller.calculate(getEncoder(), setpoint);
+    /** returns the combined calculated effort of our ffe and pid controllers */
+    private double getEffort() {
+        return ffeController.calculate(0)// motor.getVelocity().getValueAsDouble(),
+                                         // motor.getAcceleration().getValueAsDouble())// + //TODO debate velocity and
+                                         // acceleration things. it is new therefore scary (Usually it is 0)
+                + controller.calculate(getEncoder(), setpoint);
     }
 
-    /**returns true if the elev encoder and setpoint are within 1.5 units of each other */
+    /**
+     * returns true if the elev encoder and setpoint are within 1.5 units of each
+     * other
+     */
     public boolean isNearGoal() {
-        return MathUtil.isNear(setpoint, getEncoder(), 1.5);
+        if (RobotBase.isSimulation()) {
+            return MathUtil.isNear(setpoint, getEncoder(), 0.08);
+        } else {
+            return MathUtil.isNear(setpoint, getEncoder(), 1.5);
+        }
     }
 
     @Override
     public void simulationPeriodic() {
-        //update the elev sim
+        // update the elev sim
         elevSim.setInput(motor.getMotorVoltage().getValueAsDouble() * 28);
         elevSim.update(0.001);
     }
 
     @Override
     public void periodic() {
-        //updating dashboard
+        // updating dashboard
         SmartDashboard.putNumber("Elevator encoder", getEncoder());
         SmartDashboard.putNumber("Elevator setpoint", setpoint);
-        //SmartDashboard.putNumber("Elevator velocity", motor.getVelocity().getValueAsDouble());
+        // SmartDashboard.putNumber("Elevator velocity",
+        // motor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());
-        //SmartDashboard.putNumber("Elevator acceleration", motor.getAcceleration().getValueAsDouble());
+        // SmartDashboard.putNumber("Elevator acceleration",
+        // motor.getAcceleration().getValueAsDouble());
 
-        //SmartDashboard.putNumber("Elevator follower set voltage",
-                //followerMotor.getMotorVoltage().getValueAsDouble());
+        // SmartDashboard.putNumber("Elevator follower set voltage",
+        // followerMotor.getMotorVoltage().getValueAsDouble());
 
-        //updating motor voltage
+        // updating motor voltage
         motor.setVoltage(getEffort());
     }
 }

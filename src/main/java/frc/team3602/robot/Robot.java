@@ -5,7 +5,6 @@
 package frc.team3602.robot;
 
 import au.grapplerobotics.CanBridge;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,10 +34,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    //Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe add back in?
+    Threads.setCurrentThreadPriority(true, 99);//TODO question this. maybe take out if proven uselessS
     CommandScheduler.getInstance().run();
+    robotContainer.preventTipping();
 
-    //Threads.setCurrentThreadPriority(false, 10);
+    Threads.setCurrentThreadPriority(false, 10);
+    robotContainer.updateDriverMultiplier();
+
   }
 
   @Override

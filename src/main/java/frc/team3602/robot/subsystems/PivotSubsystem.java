@@ -1,4 +1,4 @@
-package frc.team3602.robot.subsystems.pivot;
+package frc.team3602.robot.subsystems;
 
 import static frc.team3602.robot.Constants.HardwareConstants.*;
 import static frc.team3602.robot.Constants.PivotConstants.*;
@@ -43,10 +43,10 @@ public class PivotSubsystem extends SubsystemBase {
 
     public final double startingAngle = 30;
     private double setpoint;
-    public double intakeSpeed = .5;
+    public double intakeSpeed = 0;
 
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), PIVOT_GEARING,
-            estimateMOI(0.3, 1), 0.3, -3, 3, true, startingAngle);
+            estimateMOI(0.3, 1), 0.3, -3, 3, true, Units.degreesToRadians(startingAngle));
 
     /** Simulation Constructor */
     public PivotSubsystem(CommandJoystick joystick) {
@@ -76,6 +76,8 @@ public class PivotSubsystem extends SubsystemBase {
 
         CurrentLimitsConfigs limitCfg = cfg.CurrentLimits;
         limitCfg.StatorCurrentLimit = PIVOT_CURRENT_LIMIT;
+
+        setIntake(0);
     }
 
     /** IRL Constructor, NOT for sim */
@@ -103,6 +105,8 @@ public class PivotSubsystem extends SubsystemBase {
         pivotMotor.getConfigurator().apply(cfg);
 
         laser = new LaserCan(INTAKE_LASER_ID);
+
+        setIntake(0);
 
     }
 

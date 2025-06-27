@@ -3,11 +3,9 @@ package frc.team3602.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.team3602.robot.subsystems.ElevSubsystem;
+import frc.team3602.robot.subsystems.PivotSubsystem;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
-import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
-import frc.team3602.robot.subsystems.elevator.WeirdElevSubsystem;
-//import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
-import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3602.robot.Constants.PivotConstants.*;
@@ -72,7 +70,7 @@ public class Superstructure {
     public Command setPivot(double angle) {
         return sequence(
                 pivotSubsys.setAngle(angle),
-                none().until(() -> pivotSubsys.isNearGoal()));
+                waitUntil(() -> pivotSubsys.isNearGoal()));
     }
 
     /**
@@ -83,7 +81,7 @@ public class Superstructure {
         return sequence(
                 setPivot(STOW_ANGLE),
                 elevSubsys.setHeight(elevHeight),
-                none().until(() -> elevSubsys.isNearGoal()));
+                waitUntil(() -> elevSubsys.isNearGoal()));
     }
 
     /** Command sequence, ONLY compatable with AUTON!! */
@@ -100,7 +98,7 @@ public class Superstructure {
                 setPivot(SCORE_CORAL_L4_ANGLE),
                 outtakeCoral(),
                 elevSubsys.setHeight(ELEV_L4_BUMP),
-                none().until(() -> elevSubsys.isNearGoal()),
+                waitUntil(() -> elevSubsys.isNearGoal()),
                 driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0))).withTimeout(0.5));
     }
 
@@ -116,12 +114,13 @@ public class Superstructure {
     /** command sequence. ONLY compatable with TELEOP!! */
     public Command scoreCoralL4() {
         return sequence(
-                setElevator(ELEV_L4),
+                setElevator(1),//ELEV_L4),//TODO change back after sim testing
                 setPivot(SCORE_CORAL_L4_ANGLE),
+                
                 outtakeCoral(),
-                elevSubsys.setHeight(ELEV_L4_BUMP),
-                none().until(() -> elevSubsys.isNearGoal()),
-                driveSubsys.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).withTimeout(0.5),
+                elevSubsys.setHeight(1.2),//ELEV_L4_BUMP),//TODO change back after sim testing
+                waitUntil(() -> elevSubsys.isNearGoal()),
+                driveSubsys.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).withTimeout(0.3),
                 setElevator(ELEV_DOWN));
     }
 

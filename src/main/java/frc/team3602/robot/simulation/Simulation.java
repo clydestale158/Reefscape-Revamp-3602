@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3602.robot.subsystems.elevator.ElevSubsystem;
-import frc.team3602.robot.subsystems.pivot.PivotSubsystem;
+import frc.team3602.robot.subsystems.ElevSubsystem;
+import frc.team3602.robot.subsystems.PivotSubsystem;
 
 public class Simulation extends SubsystemBase {
     private ElevSubsystem elevSubsys;
