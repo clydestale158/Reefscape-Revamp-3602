@@ -11,9 +11,40 @@
           }
         },
         {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "prepElevL2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAlignLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoScoreCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Cheuch Reload Coral Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         },
         {
@@ -23,9 +54,40 @@
           }
         },
         {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "prepElevL2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAlignRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoScoreCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Cheuch Second coral reload"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         }
       ]

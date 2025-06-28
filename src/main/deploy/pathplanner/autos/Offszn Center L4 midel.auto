@@ -9,6 +9,24 @@
           "data": {
             "pathName": "Cheuch Go To Reef (middle)"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepElevL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoAlignLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoScoreCoralL4"
+          }
         }
       ]
     }

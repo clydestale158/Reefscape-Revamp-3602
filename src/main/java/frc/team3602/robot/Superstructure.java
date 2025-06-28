@@ -95,7 +95,8 @@ public class Superstructure {
         return sequence(
                 pivotSubsys.setAngle(SCORE_CORAL_ANGLE),
                 outtakeCoral(),
-                driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0))).withTimeout(0.5));
+                driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0))).withTimeout(0.3),
+                setElevator(ELEV_DOWN));
     }
 
     /** Command sequence, ONLY compatable with AUTON!! */
@@ -105,7 +106,9 @@ public class Superstructure {
                 outtakeCoral(),
                 elevSubsys.setHeight(ELEV_L4_BUMP),
                 waitUntil(() -> elevSubsys.isNearGoal()),
-                driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0))).withTimeout(0.5));
+                driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(-0.3, 0, 0))).withTimeout(0.5),
+                setElevator(ELEV_DOWN));
+
     }
 
     /** command sequence. ONLY compatable with TELEOP!! */
@@ -155,7 +158,7 @@ public class Superstructure {
         return driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, 0.6, 0.0)))
                 .until(() -> !driveSubsys.seesLeftSensor());
     }
-    
+
     /**AUTON compatable ONLY */
     public Command autoAlignRight() {
         return driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, -0.75, 0.0)))
