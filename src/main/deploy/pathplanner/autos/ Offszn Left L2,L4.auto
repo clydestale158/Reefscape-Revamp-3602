@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cheuch Go To Reef (middle)"
+            "pathName": "Go To Reef (Left)"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "autoAlignRight"
+            "pathName": "Reload Coral Left"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": null
+            "pathName": "Left Second Reef"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return Second Reef"
           }
         }
       ]
