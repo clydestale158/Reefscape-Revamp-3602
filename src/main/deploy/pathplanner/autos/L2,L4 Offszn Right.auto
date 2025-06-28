@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Cheuch New Go To Reef (Right)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Cheuch Reload Coral Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Cheuch Go To Reef (Right) 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Cheuch Second coral reload"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

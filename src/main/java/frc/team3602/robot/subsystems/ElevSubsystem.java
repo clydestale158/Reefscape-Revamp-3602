@@ -46,8 +46,8 @@ public class ElevSubsystem extends SubsystemBase {
             controller = new PIDController(1.0, 0, 0);// todo tune eventually
             ffeController = new ElevatorFeedforward(0, 0.0001, 0);
         } else {
-            controller = new PIDController(0.37, 0, 0.1);// 
-            ffeController = new ElevatorFeedforward(0.8, 0.27, 0.9, 0.1);
+            controller = new PIDController(0.6, 0, 0.001);// .54kp
+            ffeController = new ElevatorFeedforward(2.0, 0.27, 0.0, 0.0);
         }
 
         // configurations
@@ -118,7 +118,9 @@ public class ElevSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Elevator setpoint", setpoint);
         // SmartDashboard.putNumber("Elevator velocity",
         // motor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Elevator set voltage", motor.getMotorVoltage().getValueAsDouble());        
+        SmartDashboard.putNumber("Elevator calculated voltage", getEffort());
+
         // SmartDashboard.putNumber("Elevator acceleration",
         // motor.getAcceleration().getValueAsDouble());
 

@@ -41,8 +41,8 @@ public class PivotSubsystem extends SubsystemBase {
     private PIDController controller;
     private ArmFeedforward ffeController;
 
-    public final double startingAngle = 30;
-    private double setpoint;
+    public final double startingAngle = 90;
+    public double setpoint = startingAngle;
     public double intakeSpeed = 0;
 
     public final SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getKrakenX60(1), PIVOT_GEARING,
@@ -83,6 +83,7 @@ public class PivotSubsystem extends SubsystemBase {
     /** IRL Constructor, NOT for sim */
     public PivotSubsystem() {
         // no sim stuff here
+        setpoint = startingAngle;
 
         pivotEncoder = new CANcoder(PIVOT_CANCODER_ID);
 
@@ -106,7 +107,7 @@ public class PivotSubsystem extends SubsystemBase {
 
         laser = new LaserCan(INTAKE_LASER_ID);
 
-        setIntake(0);
+        //setIntake(0);
 
     }
 
@@ -116,6 +117,13 @@ public class PivotSubsystem extends SubsystemBase {
             setpoint = newAngle;
         });
     }
+
+        /** Run once command that changes the setpoint of the pivot */
+        public Command changeSetpoint(double newAngle) {
+            return runOnce(() -> {
+                setpoint = newAngle;
+            });
+        }
 
     /**
      * Run end command that sets the speed of the intake motor, then sets it to 0
@@ -167,13 +175,14 @@ public class PivotSubsystem extends SubsystemBase {
         if (Utils.isSimulation()) {
             return Units.radiansToDegrees(pivotSim.getAngleRads());
         } else {
-            return pivotMotor.getRotorPosition().getValueAsDouble();
+            return (pivotEncoder.getAbsolutePosition().getValueAsDouble() * 360.0) - 150; // absoluteOffset -160
         }
     }
 
     private double getEffort() {
-        return ffeController.calculate(Units.degreesToRadians(getEncoder()),
-                pivotMotor.getVelocity().getValueAsDouble()) + controller.calculate(getEncoder(), setpoint);
+        return ffeController.calculate(Units.degreesToRadians(getEncoder()), 0)
+                //pivotMotor.getVelocity().getValueAsDouble()) 
+                + controller.calculate(getEncoder(), setpoint);
     }
 
     public boolean isNearGoal() {
@@ -184,7 +193,7 @@ public class PivotSubsystem extends SubsystemBase {
         if (RobotBase.isSimulation()) {
             return joystick.button(2).getAsBoolean();
         } else {
-            return intakeMotor.getTorqueCurrent().getValueAsDouble() > 20;// TODO change w testing
+            return intakeMotor.getTorqueCurrent().getValueAsDouble() >80;// TODO change w testing
         }
     }
 

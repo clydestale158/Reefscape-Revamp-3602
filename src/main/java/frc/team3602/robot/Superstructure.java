@@ -1,8 +1,10 @@
 package frc.team3602.robot;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team3602.robot.subsystems.ElevSubsystem;
 import frc.team3602.robot.subsystems.PivotSubsystem;
 import frc.team3602.robot.subsystems.drive.DrivetrainSubsystem;
@@ -19,6 +21,7 @@ public class Superstructure {
     private final DrivetrainSubsystem driveSubsys;
     private final PivotSubsystem pivotSubsys;
     private final ElevSubsystem elevSubsys;
+    private final CommandXboxController xbox;
     // private ClimberSubsystem climberSubsys;
 
     private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
@@ -27,10 +30,12 @@ public class Superstructure {
     private final SwerveRequest.RobotCentric teleopDrive = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    public Superstructure(DrivetrainSubsystem driveSubsys, PivotSubsystem pivotSubsys, ElevSubsystem elevSubsys) {
+    public Superstructure(DrivetrainSubsystem driveSubsys, PivotSubsystem pivotSubsys, ElevSubsystem elevSubsys,
+            CommandXboxController xbox) {
         this.driveSubsys = driveSubsys;
         this.pivotSubsys = pivotSubsys;
         this.elevSubsys = elevSubsys;
+        this.xbox = xbox;
     }
 
     /**
@@ -49,9 +54,9 @@ public class Superstructure {
         return pivotSubsys.runIntake(SCORE_CORAL_SPEED).until(() -> !pivotSubsys.sensorIsTriggered());
     }
 
-    /** Command that runs the pivot intake in reverse for 1 second */
+    /** Command that runs the pivot intake in reverse for 0.2 seconds */
     public Command gripCoral() {
-        return pivotSubsys.setIntake(-0.5).withTimeout(1.0);
+        return pivotSubsys.runIntake(0.1).withTimeout(0.2);
     }
 
     /** Command sequence, NOT compatable with auton */
@@ -59,8 +64,9 @@ public class Superstructure {
         return sequence(
                 setElevator(ELEV_DOWN),
                 setPivot(INTAKE_CORAL_ANGLE),
-                intakeCoral(),
-                gripCoral());
+                intakeCoral()
+        // gripCoral()
+        );
     }
 
     /**
@@ -116,7 +122,7 @@ public class Superstructure {
         return sequence(
                 setElevator(ELEV_L4),
                 setPivot(SCORE_CORAL_L4_ANGLE),
-                
+
                 outtakeCoral(),
                 elevSubsys.setHeight(ELEV_L4_BUMP),
                 waitUntil(() -> elevSubsys.isNearGoal()),
@@ -144,11 +150,13 @@ public class Superstructure {
                 elevSubsys.setHeight(ELEV_DOWN));
     }
 
+    /**AUTON compatable ONLY */
     public Command autoAlignLeft() {
         return driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, 0.6, 0.0)))
                 .until(() -> !driveSubsys.seesLeftSensor());
     }
-
+    
+    /**AUTON compatable ONLY */
     public Command autoAlignRight() {
         return driveSubsys.applyRequest(() -> autoDrive.withSpeeds(new ChassisSpeeds(0.0, -0.75, 0.0)))
                 .until(() -> !driveSubsys.seesRightSensor());
@@ -168,5 +176,90 @@ public class Superstructure {
                 pivotSubsys.setAngle(INTAKE_CORAL_ANGLE),
                 waitUntil(pivotSubsys::isNearGoal),
                 pivotSubsys.runIntake(0.1).until(pivotSubsys::sensorIsTriggered));
+    }
+
+    /** Command sequence, NOT compatable with auton */
+    public Command removeAlgaeLow() {
+        return sequence(
+          
+                        sequence(setPivot(INTAKE_ALGAE_ANGLE),
+                                elevSubsys.setHeight(ELEV_L2_ALGAE),
+                                pivotSubsys.runIntake(INTAKE_ALGAE_SPEED).until(() -> pivotSubsys.hasAlgae()),
+                                waitSeconds(0.5),
+                                pivotSubsys.setIntake(HOLD_ALGAE_SPEED))
+                
+
+                // driveSubsys
+                //         .applyRequest(() -> teleopDrive.withVelocityX(-0.3 + xbox.getLeftY() * 0.4)
+                //                 .withVelocityY(xbox.getLeftX() * 0.4).withRotationalRate(xbox.getRightX() * 0.2))
+                //         .withTimeout(0.3),
+                // elevSubsys.setHeight(ELEV_L1)
+                );
+    }
+
+    /** Command sequence, NOT compatable with auton */
+    public Command removeAlgaeHigh() {
+        return sequence(
+          setPivot(INTAKE_ALGAE_ANGLE),
+                        elevSubsys.setHeight(ELEV_L3_ALGAE),
+                        pivotSubsys.runIntake(INTAKE_ALGAE_SPEED).until(() -> pivotSubsys.hasAlgae()),
+                        waitSeconds(0.5),
+                        pivotSubsys.setIntake(HOLD_ALGAE_SPEED)
+                // driveSubsys
+                //         .applyRequest(() -> teleopDrive.withVelocityX(-0.3 + xbox.getLeftY() * 0.4)
+                //                 .withVelocityY(xbox.getLeftX() * 0.4).withRotationalRate(xbox.getRightX() * 0.2))
+                //         .withTimeout(0.3),
+                // elevSubsys.setHeight(ELEV_L1)
+                );
+    }
+
+    /** Run end command, NOT compatable with auton */
+    public Command scoreAlgae() {
+        return 
+            sequence(
+                setPivot(-65),
+            pivotSubsys.setIntake(SCORE_ALGAE_SPEED),
+            waitSeconds(0.3),
+                    pivotSubsys.setIntake(0),
+                    setElevator(ELEV_DOWN));
+        
+    }
+
+    public Command placeAlgaeInBarge() {
+        return Commands.sequence(
+                pivotSubsys.setIntake(0),
+
+                pivotSubsys.setAngle(22.0),
+                waitUntil(pivotSubsys::isNearGoal),
+
+                elevSubsys.setHeight(ELEV_L3),
+                waitUntil(elevSubsys::isNearGoal),
+
+                parallel(
+                        sequence(
+                                elevSubsys.setHeight(ELEV_L4),
+                                waitUntil(elevSubsys::isNearGoal)),
+                        sequence(
+                                pivotSubsys.setIntake(0.5),
+                                pivotSubsys.setAngle(30.0))),
+                waitSeconds(0.5),               
+                pivotSubsys.setIntake(0));
+    }
+
+    public Command downFromBarge() {
+        return sequence(
+                setPivot(-20),
+                elevSubsys.setHeight(ELEV_L3),
+                setElevator(ELEV_DOWN));
+    }
+
+    public Command storeAlgae() {
+        return sequence(
+                 driveSubsys
+                        .applyRequest(() -> teleopDrive.withVelocityX(-0.3 + xbox.getLeftY() * 0.4)
+                                .withVelocityY(xbox.getLeftX() * 0.4).withRotationalRate(xbox.getRightX() * 0.2))
+                        .withTimeout(0.3),
+                elevSubsys.setHeight(ELEV_L1),
+                setPivot(HOLD_ALGAE_ANGLE));
     }
 }
