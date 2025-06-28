@@ -128,6 +128,11 @@ public class ElevSubsystem extends SubsystemBase {
         // followerMotor.getMotorVoltage().getValueAsDouble());
 
         // updating motor voltage
-        motor.setVoltage(getEffort());
+
+        if(motor.getTorqueCurrent().getValueAsDouble()<40.0){
+            motor.setVoltage(getEffort());
+        } else {
+            setpoint = 5;
+        }
     }
 }

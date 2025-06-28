@@ -123,13 +123,20 @@ public class Superstructure {
     /** command sequence. ONLY compatable with TELEOP!! */
     public Command scoreCoralL4() {
         return sequence(
-                setElevator(ELEV_L4),
+                //setElevator(ELEV_L4),
+                race(
                 setPivot(SCORE_CORAL_L4_ANGLE),
+                waitSeconds(0.6)),
 
+                race(
                 outtakeCoral(),
+                waitSeconds(1)),
+
+                pivotSubsys.setIntake(-0.5),
                 elevSubsys.setHeight(ELEV_L4_BUMP),
                 waitUntil(() -> elevSubsys.isNearGoal()),
                 driveSubsys.applyRequest(() -> teleopDrive.withVelocityX(-0.3)).withTimeout(0.3),
+                pivotSubsys.setIntake(0),
                 setElevator(ELEV_DOWN));
     }
 
@@ -243,16 +250,17 @@ public class Superstructure {
                                 elevSubsys.setHeight(ELEV_L4),
                                 waitUntil(elevSubsys::isNearGoal)),
                         sequence(
-                                pivotSubsys.setIntake(0.5),
+                                pivotSubsys.setIntake(-0.7),
                                 pivotSubsys.setAngle(30.0))),
-                waitSeconds(0.5),               
+                waitSeconds(2.5),               
                 pivotSubsys.setIntake(0));
     }
 
     public Command downFromBarge() {
         return sequence(
-                setPivot(-20),
-                elevSubsys.setHeight(ELEV_L3),
+                setPivot(-30),
+                elevSubsys.setHeight(ELEV_L2),
+                waitSeconds(0.2),
                 setElevator(ELEV_DOWN));
     }
 

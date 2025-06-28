@@ -104,12 +104,12 @@ public class RobotContainer {
         if (Utils.isSimulation()) {
             drivetrain.setDefaultCommand(drivetrain.applyRequest(
                     () -> drive.withVelocityX(-joystick.getRawAxis(0) * MaxSpeed * polarityChooser.getSelected())
-                            .withVelocityY(joystick.getRawAxis(1) * MaxSpeed * polarityChooser.getSelected())
+                            .withVelocityY(-joystick.getRawAxis(1) * MaxSpeed * polarityChooser.getSelected())
                             .withRotationalRate(-joystick2.getRawAxis(0) * MaxAngularRate * driverSpeedMultiplier)));
         } else {
             drivetrain.setDefaultCommand(drivetrain
                     .applyRequest(() -> drive.withVelocityX(-xbox.getLeftY() * MaxSpeed * polarityChooser.getSelected())
-                            .withVelocityY(xbox.getLeftX() * MaxSpeed * polarityChooser.getSelected())
+                            .withVelocityY(-xbox.getLeftX() * MaxSpeed * polarityChooser.getSelected())
                             .withRotationalRate(-xbox.getRightX() * MaxAngularRate * driverSpeedMultiplier)));
         }
     }
@@ -143,8 +143,8 @@ public class RobotContainer {
         // Driver controls
         xbox.leftBumper().onTrue(superstructure.removeAlgaeLow().alongWith(drivetrain
         .applyRequest(() -> teleopDrive.withVelocityX(-xbox.getLeftY() * MaxSpeed * polarityChooser.getSelected() * 0.2)
-                .withVelocityY(xbox.getLeftX() * MaxSpeed * polarityChooser.getSelected() * 0.2)
-                .withRotationalRate(-xbox.getRightX() * MaxAngularRate * 0.5))));
+                .withVelocityY(-xbox.getLeftX() * MaxSpeed * polarityChooser.getSelected() * 0.2)
+                .withRotationalRate(xbox.getRightX() * MaxAngularRate * 0.5))));
         xbox.rightBumper().onTrue(superstructure.removeAlgaeHigh().alongWith(drivetrain
         .applyRequest(() -> teleopDrive.withVelocityX(-xbox.getLeftY() * MaxSpeed * polarityChooser.getSelected() * 0.2)
                 .withVelocityY(xbox.getLeftX() * MaxSpeed * polarityChooser.getSelected()*0.2)
@@ -174,13 +174,13 @@ public class RobotContainer {
 
         xbox.povRight().whileTrue(
                 drivetrain.applyRequest(() -> teleopDrive.withVelocityX(0.0)
-                        .withVelocityY(0.6)
+                        .withVelocityY(-0.6)
                         .withRotationalRate(0.0))
                         .until(() -> !drivetrain.seesRightSensor()));
 
         xbox.povLeft().whileTrue(
                 drivetrain.applyRequest(() -> teleopDrive.withVelocityX(0.0)
-                        .withVelocityY(-0.6)
+                        .withVelocityY(0.6)
                         .withRotationalRate(0.0))
                         .until(() -> !drivetrain.seesLeftSensor()));
 
@@ -199,8 +199,8 @@ public class RobotContainer {
 
         xbox.a().onTrue(superstructure.storeAlgae());//
         xbox.b().onTrue(superstructure.scoreAlgae());
-        xbox.x().onTrue(pivotSubsystem.setAngle(INTAKE_CORAL_ANGLE));
-        xbox.y().onTrue(pivotSubsystem.setAngle(-65));
+        xbox.x().onTrue(pivotSubsystem.setAngle(STOW_ANGLE));
+        xbox.y().onTrue(pivotSubsystem.setAngle(-30));
 
         //xbox.x().onTrue(pivotSubsystem.setpoint = pivotSubsystem.setpoint - 2);
         //xbox.y().onTrue(pivotSubsystem.setpoint = pivotSubsystem.setpoint + 2);
@@ -208,7 +208,7 @@ public class RobotContainer {
         //operator bindings
         xbox2.povUp().onTrue(superstructure.scoreCoralL4());
         xbox2.povDown().onTrue(superstructure.getCoral());
-        xbox2.povLeft().onTrue(superstructure.intakeCoral());
+        xbox2.povLeft().whileTrue(pivotSubsystem.runIntake(0.6));
         xbox2.povRight().onTrue(superstructure.scoreCoral());
 
         xbox2.x().onTrue(superstructure.setElevator(ELEV_L2));

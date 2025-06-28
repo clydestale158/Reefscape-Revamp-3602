@@ -12,8 +12,8 @@ public class Constants {
 
         public final static int INTAKE_LASER_ID = 31;
 
-        public final static int DRIVE_LEFT_LASER_ID = 54;
-        public final static int DRIVE_RIGHT_LASER_ID = 55;//ids might be wrong, but this is functional lol
+        public final static int DRIVE_LEFT_LASER_ID = 55;
+        public final static int DRIVE_RIGHT_LASER_ID = 54;//ids might be wrong, but this is functional lol
 
         // gearing and current limits
         public final static double ELEV_GEARING = 12;
@@ -28,11 +28,11 @@ public class Constants {
 
     public class PivotConstants {
         // intake speeds//0.5 -> 0.3 && 0.3 -> 0.1
-        public final static double INTAKE_CORAL_SPEED = -0.1;
+        public final static double INTAKE_CORAL_SPEED = -0.15;//-0.1
         public final static double SCORE_CORAL_SPEED = -0.3;
         public final static double INTAKE_ALGAE_SPEED = 0.5;
         public final static double HOLD_ALGAE_SPEED = 0.7;
-        public final static double SCORE_ALGAE_SPEED = -0.1;
+        public final static double SCORE_ALGAE_SPEED = -0.2;//-0.1
 
         // pivot angles
         public final static double INTAKE_CORAL_ANGLE = 101;
@@ -41,7 +41,7 @@ public class Constants {
         public final static double HOLD_ALGAE_ANGLE = 30;
 
         public final static double SCORE_CORAL_ANGLE = 80;
-        public final static double SCORE_CORAL_L4_ANGLE = 70;
+        public final static double SCORE_CORAL_L4_ANGLE = 80;
     }
 
     public class ElevConstants {
@@ -49,8 +49,8 @@ public class Constants {
         public final static double ELEV_L1 = 2;
         public final static double ELEV_L2 = 6.5;
         public final static double ELEV_L3 = 16;
-        public final static double ELEV_L4 = 31;
-        public final static double ELEV_L4_BUMP = 33;
+        public final static double ELEV_L4 = 30;//30
+        public final static double ELEV_L4_BUMP = 31.7;//33
 
         public final static double ELEV_L2_ALGAE = 13;
         public final static double ELEV_L3_ALGAE = 22;
