@@ -243,6 +243,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("autoAlignLeft", superstructure.autoAlignLeft());
         NamedCommands.registerCommand("autoAlignRight", superstructure.autoAlignRight());
 
+
+        NamedCommands.registerCommand("autoScoreCoral", superstructure.autoScoreCoral());
+        NamedCommands.registerCommand("autoScoreCoralL4", superstructure.autoScoreCoralL4());
         NamedCommands.registerCommand("Test", print("Auton test"));
 
         // TODO add more commands
